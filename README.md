@@ -69,22 +69,35 @@ ssh -i "HP-andrii.vedmid.sigma.software.pem" ec2-user@ec2-3-123-154-112.eu-centr
 - **2.0 Update all package**
 <br> If you create new instance on AWS run this command:
 <br>
-```bash
+
+```
 sudo yum update -y
 ```
+
 - **2.1 Install Docker**<br>
-```bash
+
+```
 sudo yum install docker -y
 ```
+
+
 - **2.2 Start Docker**<br>
-```bash
+
+```
 sudo service docker start
 ```
+
+
 - **2.3 Start the APP**
-```bash
+
+
+```
 sudo docker run -p 80:8080 vedmik/sigma.software.bu003.internship
 ```
+
+
 - **2.4 Your app is running, Congratulations!!!** <br> Now your app is running and has the Public IP address we got in 1.5
+
 ___
 ## Author
 
