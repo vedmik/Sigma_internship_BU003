@@ -61,7 +61,8 @@ to your instance. <br>In my case it's: <br>
 ```bash
 ssh -i "HP-andrii.vedmid.sigma.software.pem" ec2-user@ec2-3-123-154-112.eu-central-1.compute.amazonaws.com
 ```
-<br><br>Open the console, select the folder where your SSH key is located _(from point 1.3.4.)_  and enter this command.
+<br><br>Open the console, select the folder where your SSH key is located _(from point 1.3.4.)_  
+and enter this command.
 
 
 ### 2. Install Docker and start app 
@@ -92,11 +93,12 @@ sudo service docker start
 
 
 ```
-sudo docker run -p 80:8080 vedmik/sigma.software.bu003.internship
+sudo docker run -d --restart unless-stopped -p 80:8080 vedmik/sigma.software.bu003.internship
 ```
 
 
-- **2.4 Your app is running, Congratulations!!!** <br> Now your app is running and has the Public IP address we got in 1.5
+- **2.4 Your app is running, Congratulations!!!** <br> Now your app is running and has the Public 
+IP address we got in 1.5<br><br>
 
 ___
 ## Author
