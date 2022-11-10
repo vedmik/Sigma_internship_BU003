@@ -1,1 +1,9 @@
-
+spring:
+  data:
+    mongodb:
+      username: root
+      password: example
+      database: vedmik
+      port: 27017
+      host: localhost
+      authentication-database: admin
