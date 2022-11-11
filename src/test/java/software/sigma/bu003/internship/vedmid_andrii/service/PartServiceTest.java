@@ -2,10 +2,11 @@ package software.sigma.bu003.internship.vedmid_andrii.service;
 
 import org.junit.jupiter.api.Test;
 import software.sigma.bu003.internship.vedmid_andrii.entity.Part;
-import software.sigma.bu003.internship.vedmid_andrii.exception.PartNotFoundException;
+import software.sigma.bu003.internship.vedmid_andrii.service.exception.PartNotFoundException;
 import software.sigma.bu003.internship.vedmid_andrii.repository.PartRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -20,58 +21,20 @@ class PartServiceTest {
 
     private final PartService service = new PartService(repository);
 
-    private final String partId = "1111111111111111";
     private final String brand = "Audi";
-    private final String code ="vw12345";
-    private final Part part = Part.builder()
-            .id(partId)
-            .brand(brand)
-            .code(code)
-            .price(11.11)
-            .description("Some description")
-            .build();
-    private final Part partWithoutBrand = Part.builder().code(code).build();
-    private final Part partWithoutCode = Part.builder().brand(brand).build();
-
-    private final String message404 = "This part is not available in the DB";
-    private final String messageWrongPart = "Missing brand or part code";
+    private final String code = "vw12345";
+    private final String partId = brand + code;
+    private final Part part = new Part(brand, code);
+    private final String message404 = String.format("Part with \"brand\": %s, \"code\": %s is not found.", brand, code);
 
     @Test
-    void createPart_TakePartAndTakeFromDBThisPart_ReturnExistingPart() {
-        when(repository.findByBrandAndCode(brand, code)).thenReturn(part);
+    void createPart_TakePartAndAddToDB_ReturnExistingPart() {
+        when(repository.insert(part)).thenReturn(part);
 
         Part actual = service.createPart(part);
 
         assertEquals(part, actual);
-        verify(repository).findByBrandAndCode(brand, code);
-    }
-
-    @Test
-    void createPart_TakePartAndTakeFromDBAnotherPart_ReturnNewPart() {
-        when(repository.findByBrandAndCode(brand, code)).thenReturn(null);
-        when(repository.save(part)).thenReturn(part);
-
-        Part actual = service.createPart(part);
-
-        assertEquals(part, actual);
-        verify(repository).findByBrandAndCode(brand, code);
-        verify(repository).save(part);
-    }
-
-    @Test
-    void createPart_TakePartWithoutBrand_ReturnException() {
-        PartNotFoundException thrown = assertThrows(PartNotFoundException.class, () ->
-                service.createPart(partWithoutBrand)
-        );
-        assertEquals(messageWrongPart, thrown.getMessage());
-    }
-
-    @Test
-    void createPart_TakePartWithoutCode_ReturnException() {
-        PartNotFoundException thrown = assertThrows(PartNotFoundException.class, () ->
-                service.createPart(partWithoutCode)
-        );
-        assertEquals(messageWrongPart, thrown.getMessage());
+        verify(repository).insert(part);
     }
 
     @Test
@@ -86,145 +49,71 @@ class PartServiceTest {
 
     @Test
     void getPart_TakeStringBrandAndCode_ReturnPart() {
-        when(repository.findByBrandAndCode(brand, code)).thenReturn(part);
+        when(repository.findById(partId)).thenReturn(Optional.of(part));
 
         Part actual = service.getPart(brand, code);
 
         assertEquals(part, actual);
-        verify(repository).findByBrandAndCode(brand, code);
+        verify(repository).findById(brand + code);
     }
 
     @Test
     void getPart_TakeEmptyStringBrandOrEmptyStringCode_ReturnPart() {
-        when(repository.findByBrandAndCode("", "")).thenReturn(null);
+        when(repository.findById(partId)).thenReturn(Optional.empty());
 
         PartNotFoundException thrown = assertThrows(PartNotFoundException.class, () ->
-            service.getPart("", "")
+            service.getPart(brand, code)
         );
         assertEquals(message404, thrown.getMessage());
-        verify(repository).findByBrandAndCode("", "");
+        verify(repository).findById(partId);
     }
 
     @Test
     void updatePart_TakePartWithAnotherPriceAndAnotherDescription_ReturnUpdatedPart() {
-        Part newPartData = Part.builder()
-                .id(partId)
-                .brand(brand)
-                .code(code)
-                .price(300D)
-                .description("111")
-                .build();
+        Part anotherPart = new Part(brand, code);
+        anotherPart.setPrice(300D);
+        anotherPart.setDescription("111");
 
-        when(repository.findByBrandAndCode(brand, code)).thenReturn(part);
-        when(repository.save(newPartData)).thenReturn(newPartData);
+        when(repository.findById(partId)).thenReturn(Optional.of(part));
+        when(repository.save(anotherPart)).thenReturn(anotherPart);
 
-        Part actual = service.updatePart(newPartData);
+        Part actual = service.updatePart(anotherPart);
 
-        assertEquals(newPartData, actual);
-        verify(repository).findByBrandAndCode(brand, code);
-        verify(repository).save(newPartData);
+        assertEquals(anotherPart, actual);
+        verify(repository).findById(partId);
+        verify(repository).save(anotherPart);
     }
 
-    @Test
-    void updatePart_TakePartWithAnotherPriceAndWithoutDesc_ReturnUpdatedPart() {
-        Part partDTOWithoutDesc = Part.builder()
-                .id(partId)
-                .brand(brand)
-                .code(code)
-                .price(300D)
-                .build();
-
-        Part updatedPartWithDesc = Part.builder()
-                .id(partId)
-                .brand(brand)
-                .code(code)
-                .price(300D)
-                .description("Some description")
-                .build();
-
-        when(repository.findByBrandAndCode(brand, code)).thenReturn(part);
-        when(repository.save(updatedPartWithDesc)).thenReturn(updatedPartWithDesc);
-
-        Part actual = service.updatePart(partDTOWithoutDesc);
-
-        assertEquals(updatedPartWithDesc, actual);
-        verify(repository).findByBrandAndCode(brand, code);
-        verify(repository).save(updatedPartWithDesc);
-    }
 
     @Test
-    void updatePart_TakePartWithAnotherDescAndWithoutPrice_ReturnUpdatedPart() {
-        Part partDTOWithoutPrice = Part.builder()
-                .id(partId)
-                .brand(brand)
-                .code(code)
-                .description("another description")
-                .build();
-
-        Part updatedPartWithPrice = Part.builder()
-                .id(partId)
-                .brand(brand)
-                .code(code)
-                .price(11.11)
-                .description("another description")
-                .build();
-
-        when(repository.findByBrandAndCode(brand, code)).thenReturn(part);
-        when(repository.save(updatedPartWithPrice)).thenReturn(updatedPartWithPrice);
-
-        Part actual = service.updatePart(partDTOWithoutPrice);
-
-        assertEquals(updatedPartWithPrice, actual);
-        verify(repository).findByBrandAndCode(brand, code);
-        verify(repository).save(updatedPartWithPrice);
-    }
-
-    @Test
-    void updatePart_TakePartWithEmptyBrand_ReturnException() {
-        PartNotFoundException thrown = assertThrows(PartNotFoundException.class, () ->
-                service.updatePart(partWithoutBrand)
-        );
-        assertEquals(messageWrongPart, thrown.getMessage());
-    }
-
-    @Test
-    void updatePart_TakePartWithEmptyCode_ReturnException() {
-        PartNotFoundException thrown = assertThrows(PartNotFoundException.class, () ->
-                service.updatePart(partWithoutCode)
-        );
-        assertEquals(messageWrongPart, thrown.getMessage());
-    }
-
-    @Test
-    void updatePart_TakeWrongPart_ReturnException() {
-        when(repository.findByBrandAndCode(brand, code)).thenReturn(null);
+    void updatePart_TakePartWithWrongId_ReturnException() {
+        when(repository.findById(partId)).thenReturn(Optional.empty());
 
         PartNotFoundException thrown = assertThrows(PartNotFoundException.class, () ->
                 service.updatePart(part)
         );
         assertEquals(message404, thrown.getMessage());
-        verify(repository).findByBrandAndCode(brand, code);
     }
 
     @Test
     void deletePart_TakePart_ReturnVoid() {
-        when(repository.findByBrandAndCode(brand, code)).thenReturn(part);
+        when(repository.findById(partId)).thenReturn(Optional.of(part));
         doNothing().when(repository).delete(part);
 
         service.deletePart(brand, code);
 
-        verify(repository).findByBrandAndCode(brand, code);
+        verify(repository).findById(partId);
         verify(repository).delete(part);
     }
 
     @Test
     void deletePart_TakeWrongPart_ReturnException() {
-        when(repository.findByBrandAndCode(brand, code)).thenReturn(null);
+        when(repository.findById(partId)).thenReturn(Optional.empty());
 
         PartNotFoundException thrown = assertThrows(PartNotFoundException.class, () ->
                 service.deletePart(brand, code)
         );
         assertEquals(message404, thrown.getMessage());
-        verify(repository).findByBrandAndCode(brand, code);
+        verify(repository).findById(partId);
     }
 }

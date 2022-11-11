@@ -7,3 +7,12 @@ spring:
       port: 27017
       host: localhost
       authentication-database: admin
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
