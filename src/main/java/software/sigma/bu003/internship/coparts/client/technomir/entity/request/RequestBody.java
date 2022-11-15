@@ -1,4 +1,4 @@
-package software.sigma.bu003.internship.vedmid_andrii.client.tehnomir.entity.request;
+package software.sigma.bu003.internship.coparts.client.technomir.entity.request;
 
 import lombok.*;
 

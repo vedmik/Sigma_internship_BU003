@@ -1,4 +1,4 @@
-package software.sigma.bu003.internship.vedmid_andrii.client.tehnomir.exception;
+package software.sigma.bu003.internship.coparts.client.technomir.exception;
 
 public class TehnomirClientException extends RuntimeException {
 

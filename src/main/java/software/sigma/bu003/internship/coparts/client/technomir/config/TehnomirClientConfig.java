@@ -1,4 +1,4 @@
-package software.sigma.bu003.internship.vedmid_andrii.client.tehnomir.config;
+package software.sigma.bu003.internship.coparts.client.technomir.config;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,16 +1,16 @@
-package software.sigma.bu003.internship.vedmid_andrii.client.tehnomir.client;
+package software.sigma.bu003.internship.coparts.client.technomir.client;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import software.sigma.bu003.internship.vedmid_andrii.client.tehnomir.config.ApiUri;
-import software.sigma.bu003.internship.vedmid_andrii.client.tehnomir.entity.request.RequestBody;
-import software.sigma.bu003.internship.vedmid_andrii.client.tehnomir.config.TehnomirClientConfig;
-import software.sigma.bu003.internship.vedmid_andrii.client.tehnomir.entity.responce.Part;
-import software.sigma.bu003.internship.vedmid_andrii.client.tehnomir.entity.responce.PartWrapper;
-import software.sigma.bu003.internship.vedmid_andrii.client.tehnomir.entity.responce.StockPart;
-import software.sigma.bu003.internship.vedmid_andrii.client.tehnomir.entity.responce.StockPartsWrapper;
-import software.sigma.bu003.internship.vedmid_andrii.client.tehnomir.exception.TehnomirClientException;
+import software.sigma.bu003.internship.coparts.client.technomir.config.ApiUri;
+import software.sigma.bu003.internship.coparts.client.technomir.entity.request.RequestBody;
+import software.sigma.bu003.internship.coparts.client.technomir.config.TehnomirClientConfig;
+import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.PartFromTechnomir;
+import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.PartFromTechnomirWrapper;
+import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.StockPartFromTechnomir;
+import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.StockPartFromTechnomirWrapper;
+import software.sigma.bu003.internship.coparts.client.technomir.exception.TehnomirClientException;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,17 +24,17 @@ public class TehnomirClient {
 
     private final TehnomirClientConfig tehnomirClientConfig;
 
-    public Optional<List<StockPart>> getListStockParts() {
+    public Optional<List<StockPartFromTechnomir>> getListStockParts() {
         RequestBody requestBody = new RequestBody();
         requestBody.setApiToken(tehnomirClientConfig.getApiToken());
 
         String urlRequest = tehnomirClientConfig.getUrlToApi() + ApiUri.PRICE_GET_STOCK_PRICE.str;
 
         try {
-            StockPartsWrapper exchange = restTemplate.postForObject(
+            StockPartFromTechnomirWrapper exchange = restTemplate.postForObject(
                     urlRequest,
                     requestBody,
-                    StockPartsWrapper.class);
+                    StockPartFromTechnomirWrapper.class);
 
             return Objects.isNull(exchange)
                     ? Optional.empty()
@@ -45,7 +45,7 @@ public class TehnomirClient {
         }
     }
 
-    public Optional<List<Part>> getPartsByCode(String code) {
+    public Optional<List<PartFromTechnomir>> getPartsByCode(String code) {
         RequestBody requestBody = new RequestBody();
         requestBody.setCode(code);
         requestBody.setApiToken(tehnomirClientConfig.getApiToken());
@@ -53,10 +53,10 @@ public class TehnomirClient {
         String urlRequest = tehnomirClientConfig.getUrlToApi() + ApiUri.PRICE_POSITION_SEARCH.str;
 
         try {
-            PartWrapper exchange = restTemplate.postForObject(
+            PartFromTechnomirWrapper exchange = restTemplate.postForObject(
                     urlRequest,
                     requestBody,
-                    PartWrapper.class);
+                    PartFromTechnomirWrapper.class);
 
             return Objects.isNull(exchange)
                     ? Optional.empty()

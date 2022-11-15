@@ -1,4 +1,4 @@
-package software.sigma.bu003.internship.vedmid_andrii.config;
+package software.sigma.bu003.internship.coparts.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

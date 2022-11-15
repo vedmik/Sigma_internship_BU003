@@ -1,4 +1,4 @@
-package software.sigma.bu003.internship.vedmid_andrii.client.tehnomir.entity.responce;
+package software.sigma.bu003.internship.coparts.client.technomir.entity.responce;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class Part {
+public class PartFromTechnomir {
     private Long productId;
     private Long brandId;
     private String brand;
@@ -15,5 +15,5 @@ public class Part {
     private String descriptionRus;
     private Double weight;
     private Integer isExistProductInfo;
-    private List<Supplier> rests;
+    private List<SupplierInPartFromTehnomir> rests;
 }

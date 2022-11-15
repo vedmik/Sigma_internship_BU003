@@ -1,11 +1,11 @@
-package software.sigma.bu003.internship.vedmid_andrii.client.tehnomir.entity.responce;
+package software.sigma.bu003.internship.coparts.client.technomir.entity.responce;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class Supplier {
+public class SupplierInPartFromTehnomir {
         private String priceLogo;
         private Double price;
         private String currency;
