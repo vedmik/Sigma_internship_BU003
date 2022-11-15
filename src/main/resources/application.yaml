@@ -7,3 +7,6 @@ spring:
       port: 27017
       host: localhost
       authentication-database: admin
+tehnomir-api:
+  url-to-api: https://api.tehnomir.com.uaa
+  api-token: cmFkLGcROJnATF0YCpB6sh4kv04s3Z7s
