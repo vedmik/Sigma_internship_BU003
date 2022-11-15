@@ -1,10 +1,10 @@
-package software.sigma.bu003.internship.vedmid_andrii.service;
+package software.sigma.bu003.internship.coparts.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import software.sigma.bu003.internship.vedmid_andrii.entity.Part;
-import software.sigma.bu003.internship.vedmid_andrii.service.exception.PartNotFoundException;
-import software.sigma.bu003.internship.vedmid_andrii.repository.PartRepository;
+import software.sigma.bu003.internship.coparts.entity.Part;
+import software.sigma.bu003.internship.coparts.service.exception.PartNotFoundException;
+import software.sigma.bu003.internship.coparts.repository.PartRepository;
 
 import java.util.List;
 

@@ -1,11 +1,11 @@
-package software.sigma.bu003.internship.vedmid_andrii.controller;
+package software.sigma.bu003.internship.coparts.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import software.sigma.bu003.internship.vedmid_andrii.entity.Part;
-import software.sigma.bu003.internship.vedmid_andrii.service.PartService;
+import software.sigma.bu003.internship.coparts.entity.Part;
+import software.sigma.bu003.internship.coparts.service.PartService;
 
 import java.util.List;
 

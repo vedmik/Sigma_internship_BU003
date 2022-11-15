@@ -1,4 +1,4 @@
-package software.sigma.bu003.internship.vedmid_andrii.entity;
+package software.sigma.bu003.internship.coparts.entity;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,4 +1,4 @@
-package software.sigma.bu003.internship.vedmid_andrii.controller;
+package software.sigma.bu003.internship.coparts.controller;
 
 import com.mongodb.MongoWriteException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import software.sigma.bu003.internship.vedmid_andrii.service.exception.PartNotFoundException;
+import software.sigma.bu003.internship.coparts.service.exception.PartNotFoundException;
 
 import javax.validation.ConstraintViolationException;
 

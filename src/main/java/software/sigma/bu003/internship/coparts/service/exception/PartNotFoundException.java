@@ -1,4 +1,4 @@
-package software.sigma.bu003.internship.vedmid_andrii.service.exception;
+package software.sigma.bu003.internship.coparts.service.exception;
 
 public class PartNotFoundException extends RuntimeException{
     public PartNotFoundException(String brand, String code) {
