@@ -39,6 +39,7 @@ sonarqube {
 		property "sonar.projectKey", "vedmik_Sigma_internship_BU003"
 		property "sonar.organization", "vedmik"
 		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.coverage.exclusions", "**/entity/*.*, **/entity/**/*.*, **/config/*.*"
 	}
 }
 

@@ -1,6 +1,5 @@
 package software.sigma.bu003.internship.coparts.controller;
 
-import com.mongodb.MongoWriteException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,9 +9,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import software.sigma.bu003.internship.coparts.entity.Part;
 import software.sigma.bu003.internship.coparts.service.PartService;
+import software.sigma.bu003.internship.coparts.service.exception.PartAlreadyCreatedException;
 import software.sigma.bu003.internship.coparts.service.exception.PartNotFoundException;
 
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 import static org.mockito.Mockito.doNothing;
@@ -34,137 +33,145 @@ class PartControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private PartService service;
+    private PartService partService;
 
-    private final String urlTemplate = "/parts";
-    private final String urlTemplateWithBrandCode = "/parts/{brand}/{code}";
-    private final String brand = "Audi";
+    private final String URL_TEMPLATE = "/parts";
+    private final String URL_TEMPLATE_WITH_BRAND_CODE = "/parts/{brand}/{code}";
+    private final String BRAND = "Audi";
+    private final String CODE ="vw12345";
 
-    private final String code ="vw12345";
-
-    private final Part part = new Part(brand, code);
-
-    private final String contentPart = """
+    private final Part testPart = new Part(BRAND, CODE);
+    private final String testPartJSON = """
             {
                      "brand": "Audi",
                      "code": "vw12345"
             }
             """;
 
-    @Test
-    void createPart_TakeJsonWithPart_ReturnWithPart() throws Exception {
-        when(service.createPart(part)).thenReturn(part);
+    private final String testWrongJSON = """
+            {
+                     "code": "vw12345"
+            }
+            """;
 
-        mockMvc.perform(post(urlTemplate)
+    @Test
+    void shouldCreatePartSuccessfully() throws Exception {
+        when(partService.createPart(testPart)).thenReturn(testPart);
+
+        mockMvc.perform(post(URL_TEMPLATE)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(contentPart))
+                    .content(testPartJSON))
                 .andExpect(status().isCreated())
-                .andExpect(content().json(contentPart));
+                .andExpect(content().json(testPartJSON));
 
-        verify(service).createPart(part);
+        verify(partService).createPart(testPart);
     }
 
     @Test
-    void createPart_TakeJsonWithWrongContentPart_ReturnWithPart() throws Exception {
-        when(service.createPart(part)).thenThrow(ConstraintViolationException.class);
-
-        mockMvc.perform(post(urlTemplate)
+    void shouldIsBadRequestIfBrandOrCodeIsNull() throws Exception {
+        mockMvc.perform(post(URL_TEMPLATE)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(contentPart))
+                        .content(testWrongJSON))
                 .andExpect(status().isBadRequest());
-
-        verify(service).createPart(part);
     }
 
     @Test
-    void createPart_TakeJsonWithWrongPart_ReturnWithPart() throws Exception {
-        when(service.createPart(part)).thenThrow(MongoWriteException.class);
+    void shouldSendIsAcceptedIfPartAlreadyCreated() throws Exception {
+        when(partService.createPart(testPart)).thenThrow(PartAlreadyCreatedException.class);
 
-        mockMvc.perform(post(urlTemplate)
+        mockMvc.perform(post(URL_TEMPLATE)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(contentPart))
+                        .content(testPartJSON))
                 .andExpect(status().isAccepted());
 
-        verify(service).createPart(part);
+        verify(partService).createPart(testPart);
     }
 
     @Test
-    void getAllParts_TakeVoid_ReturnListParts() throws Exception {
-        List<Part> expectedList = List.of(part);
+    void shouldReturnAllPartsSuccessfully() throws Exception {
+        List<Part> expectedList = List.of(testPart);
 
-        when(service.getAllParts()).thenReturn(expectedList);
+        when(partService.getAllParts()).thenReturn(expectedList);
 
-        mockMvc.perform(get(urlTemplate))
+        mockMvc.perform(get(URL_TEMPLATE))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(String.format("[ %s ]", contentPart)));
+                .andExpect(content().json(String.format("[ %s ]", testPartJSON)));
 
-        verify(service).getAllParts();
+        verify(partService).getAllParts();
     }
 
     @Test
-    void getPart_TakeStringBrandAndStringCode_ReturnJsonPart() throws Exception {
-        when(service.getPart(brand, code)).thenReturn(part);
+    void shouldReturnPartByBrandAndCodeSuccessfully() throws Exception {
+        when(partService.getPart(BRAND, CODE)).thenReturn(testPart);
 
-        mockMvc.perform(get(urlTemplateWithBrandCode, brand, code))
+        mockMvc.perform(get(URL_TEMPLATE_WITH_BRAND_CODE, BRAND, CODE))
                 .andExpect(status().isOk())
-                .andExpect(content().json(contentPart));
+                .andExpect(content().json(testPartJSON));
 
-        verify(service).getPart(brand, code);
+        verify(partService).getPart(BRAND, CODE);
     }
 
     @Test
-    void getPart_TakeWrongStringBrandOrWrongStringCode_ReturnException() throws Exception {
-        when(service.getPart(brand, code)).thenThrow(PartNotFoundException.class);
+    void shouldReturnNotFound() throws Exception {
+        when(partService.getPart(BRAND, CODE)).thenThrow(PartNotFoundException.class);
 
-        mockMvc.perform(get(urlTemplateWithBrandCode, brand, code))
+        mockMvc.perform(get(URL_TEMPLATE_WITH_BRAND_CODE, BRAND, CODE))
                 .andExpect(status().isNotFound());
 
-        verify(service).getPart(brand, code);
+        verify(partService).getPart(BRAND, CODE);
     }
 
     @Test
-    void updatePart_TakeJsonPartAndSaveToDB_ReturnJsonPart() throws Exception {
-        when(service.updatePart(part)).thenReturn(part);
+    void shouldUpdateSuccessfully() throws Exception {
+        when(partService.updatePart(testPart)).thenReturn(testPart);
 
-        mockMvc.perform(put(urlTemplateWithBrandCode, brand, code)
+        mockMvc.perform(put(URL_TEMPLATE_WITH_BRAND_CODE, BRAND, CODE)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(contentPart))
+                        .content(testPartJSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(contentPart));
+                .andExpect(content().json(testPartJSON));
 
-        verify(service).updatePart(part);
+        verify(partService).updatePart(testPart);
     }
 
     @Test
-    void updatePart_TakeWrongJsonPart_ReturnException() throws Exception {
-        when(service.updatePart(part)).thenThrow(PartNotFoundException.class);
-
-        mockMvc.perform(put(urlTemplateWithBrandCode, brand, code)
+    void shouldIsBadRequestIfPutWithBrandOrCodeIsNull() throws Exception {
+        mockMvc.perform(put(URL_TEMPLATE_WITH_BRAND_CODE, BRAND, CODE)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(contentPart))
+                        .content(testWrongJSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldSendIsNotFoundIfPartIsMissing() throws Exception {
+        when(partService.updatePart(testPart)).thenThrow(PartNotFoundException.class);
+
+        mockMvc.perform(put(URL_TEMPLATE_WITH_BRAND_CODE, BRAND, CODE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(testPartJSON))
                 .andExpect(status().isNotFound());
 
-        verify(service).updatePart(part);
+        verify(partService).updatePart(testPart);
     }
 
     @Test
-    void deletePart_TakeStringBrandAndStringCode_ReturnVoid() throws Exception {
-        doNothing().when(service).deletePart(brand, code);
+    void shouldSendIsOkIfDeleteSuccessfully() throws Exception {
+        doNothing().when(partService).deletePart(BRAND, CODE);
 
-        mockMvc.perform(delete(urlTemplateWithBrandCode, brand, code))
+        mockMvc.perform(delete(URL_TEMPLATE_WITH_BRAND_CODE, BRAND, CODE))
                 .andExpect(status().isOk());
 
-        verify(service).deletePart(brand, code);
+        verify(partService).deletePart(BRAND, CODE);
     }
 
     @Test
-    void deletePart_TakeWrongStringBrandOrWrongStringCode_ReturnVoid() throws Exception {
-        doThrow(PartNotFoundException.class).when(service).deletePart(brand, code);
+    void shouldSendISNotFoundIfPartIsMissing() throws Exception {
+        doThrow(PartNotFoundException.class).when(partService).deletePart(BRAND, CODE);
 
-        mockMvc.perform(delete(urlTemplateWithBrandCode, brand, code))
+        mockMvc.perform(delete(URL_TEMPLATE_WITH_BRAND_CODE, BRAND, CODE))
                 .andExpect(status().isNotFound());
 
-        verify(service).deletePart(brand, code);
+        verify(partService).deletePart(BRAND, CODE);
     }
 }

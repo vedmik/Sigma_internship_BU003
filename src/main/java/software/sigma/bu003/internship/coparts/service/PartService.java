@@ -1,21 +1,26 @@
 package software.sigma.bu003.internship.coparts.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.sigma.bu003.internship.coparts.entity.Part;
 import software.sigma.bu003.internship.coparts.service.exception.PartNotFoundException;
 import software.sigma.bu003.internship.coparts.repository.PartRepository;
+import software.sigma.bu003.internship.coparts.service.exception.PartAlreadyCreatedException;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PartService {
 
     private final PartRepository partRepository;
 
     public Part createPart(Part part) {
-        return partRepository.insert(part);
+        try {
+            return partRepository.insert(part);
+        } catch (RuntimeException ex) {
+            throw new PartAlreadyCreatedException(part.getBrand(), part.getCode());
+        }
     }
 
     public List<Part> getAllParts() {
@@ -23,22 +28,22 @@ public class PartService {
     }
 
     public Part getPart(String brand, String code) {
-        return findInDB(brand, code);
+        return checkIfPartExistsInDB(brand, code);
     }
 
     public Part updatePart(Part part) {
-        findInDB(part.getBrand(), part.getCode());
+        checkIfPartExistsInDB(part.getBrand(),part.getCode());
 
         return partRepository.save(part);
     }
 
     public void deletePart(String brand, String code) {
-        Part partFromDB = findInDB(brand, code);
-
-        partRepository.delete(partFromDB);
+        checkIfPartExistsInDB(brand, code);
+        
+        partRepository.deleteById(brand + code);
     }
 
-    private Part findInDB(String brand, String code){
+    private Part checkIfPartExistsInDB(String brand, String code){
         return partRepository.findById(brand + code)
                 .orElseThrow(() -> new PartNotFoundException(brand, code));
     }
