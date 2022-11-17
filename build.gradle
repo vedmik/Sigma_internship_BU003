@@ -1,13 +1,13 @@
 plugins {
-	id "org.sonarqube" version "3.5.0.2730"
 	id 'org.springframework.boot' version '2.7.5'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 	id 'java'
+	id "jacoco"
+	id "org.sonarqube" version "3.5.0.2730"
 }
 
 group = 'software.sigma.BU003.internship'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
 
 configurations {
 	compileOnly {
@@ -16,12 +16,15 @@ configurations {
 }
 
 repositories {
+	mavenLocal()
+
 	mavenCentral()
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -36,5 +39,16 @@ sonarqube {
 		property "sonar.projectKey", "vedmik_Sigma_internship_BU003"
 		property "sonar.organization", "vedmik"
 		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.coverage.exclusions", "**/entity/*.*, **/entity/**/*.*, **/config/*.*"
+	}
+}
+
+test {
+	finalizedBy jacocoTestReport
+}
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = true
 	}
 }
