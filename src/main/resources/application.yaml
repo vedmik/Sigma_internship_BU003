@@ -5,5 +5,5 @@ spring:
       password: example
       database: vedmik
       port: 27017
-      host: localhost
+      host: mongo
       authentication-database: admin
