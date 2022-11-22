@@ -5,11 +5,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class SupplierInPartFromTehnomir {
+public class SupplierTehnomirPart {
         private String priceLogo;
         private Double price;
         private String currency;
-        private Long quantity;
+        private Integer quantity;
         private String quantityType;
         private Integer multiplicity;
         private Double priceQuality;

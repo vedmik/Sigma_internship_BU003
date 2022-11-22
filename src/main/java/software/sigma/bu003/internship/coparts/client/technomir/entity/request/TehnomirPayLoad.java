@@ -1,10 +1,12 @@
 package software.sigma.bu003.internship.coparts.client.technomir.entity.request;
 
-import lombok.*;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class RequestBody {
+public class TehnomirPayLoad {
     private String apiToken;
     private Integer unloadId;
     private String fromDate;

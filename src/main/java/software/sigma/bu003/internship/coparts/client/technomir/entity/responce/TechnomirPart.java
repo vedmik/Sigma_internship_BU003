@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class PartFromTechnomir {
+public class TechnomirPart {
     private Long productId;
     private Long brandId;
     private String brand;
@@ -15,5 +15,5 @@ public class PartFromTechnomir {
     private String descriptionRus;
     private Double weight;
     private Integer isExistProductInfo;
-    private List<SupplierInPartFromTehnomir> rests;
+    private List<SupplierTehnomirPart> rests;
 }

@@ -2,10 +2,11 @@ package software.sigma.bu003.internship.coparts.client.technomir.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import software.sigma.bu003.internship.coparts.client.technomir.client.TehnomirClient;
-import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.PartFromTechnomir;
-import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.StockPartFromTechnomir;
+import software.sigma.bu003.internship.coparts.client.technomir.client.TechnomirClient;
+import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.TechnomirPart;
+import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.StockTechnomirPart;
 import software.sigma.bu003.internship.coparts.client.technomir.exception.ObjectIsEmptyException;
+import software.sigma.bu003.internship.coparts.client.technomir.exception.PartIsEmptyException;
 
 import java.util.List;
 
@@ -13,15 +14,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TehnomirService {
 
-    private final TehnomirClient tehnomirClient;
+    private final TechnomirClient technomirClient;
 
-    public List<StockPartFromTechnomir> getStockParts() {
-        return tehnomirClient.getListStockParts()
+    public List<StockTechnomirPart> getStockParts() {
+        return technomirClient.getListStockParts()
                 .orElseThrow(ObjectIsEmptyException::new);
     }
 
-    public List<PartFromTechnomir> getPartsByCode(String code) {
-        return tehnomirClient.getPartsByCode(code)
-                .orElseThrow(ObjectIsEmptyException::new);
+    public List<TechnomirPart> getPartsByCode(String code) {
+        return technomirClient.getPartsByCode(code)
+                .orElseThrow(() -> new PartIsEmptyException(code));
     }
 }

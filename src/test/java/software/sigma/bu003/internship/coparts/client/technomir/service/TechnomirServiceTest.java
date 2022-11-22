@@ -5,12 +5,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import software.sigma.bu003.internship.coparts.client.technomir.client.TehnomirClient;
-import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.PartFromTechnomirWrapper;
-import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.StockPartFromTechnomirWrapper;
-import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.PartFromTechnomir;
-import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.StockPartFromTechnomir;
+import software.sigma.bu003.internship.coparts.client.technomir.client.TechnomirClient;
+import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.TechnomirPartWrapper;
+import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.StockTechnomirPartWrapper;
+import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.TechnomirPart;
+import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.StockTechnomirPart;
 import software.sigma.bu003.internship.coparts.client.technomir.exception.ObjectIsEmptyException;
+import software.sigma.bu003.internship.coparts.client.technomir.exception.PartIsEmptyException;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.when;
 class TechnomirServiceTest {
 
     @Mock
-    private TehnomirClient tehnomirClient;
+    private TechnomirClient technomirClient;
 
     @InjectMocks
     private TehnomirService service;
@@ -33,47 +34,46 @@ class TechnomirServiceTest {
 
     @Test
     void shouldReturnStockPartsIfSuccessfully() {
-        StockPartFromTechnomir stockPartFromTechnomir = new StockPartFromTechnomir();
+        StockTechnomirPart stockTechnomirPart = new StockTechnomirPart();
 
-        StockPartFromTechnomirWrapper stockPartFromTechnomirWrapper = new StockPartFromTechnomirWrapper();
-        stockPartFromTechnomirWrapper.setData(List.of(stockPartFromTechnomir));
+        StockTechnomirPartWrapper stockTechnomirPartWrapper = new StockTechnomirPartWrapper();
+        stockTechnomirPartWrapper.setData(List.of(stockTechnomirPart));
 
-        when(tehnomirClient.getListStockParts()).thenReturn(Optional.of(List.of(stockPartFromTechnomir)));
+        when(technomirClient.getListStockParts()).thenReturn(Optional.of(List.of(stockTechnomirPart)));
 
-        List<StockPartFromTechnomir> actual = service.getStockParts();
+        service.getStockParts();
 
-        assertEquals(List.of(stockPartFromTechnomir), actual);
-        verify(tehnomirClient, times(1)).getListStockParts();
+        verify(technomirClient, times(1)).getListStockParts();
     }
 
     @Test
     void shouldTrowExceptionIfStockPartsEmpty() {
-        when(tehnomirClient.getListStockParts()).thenReturn(Optional.empty());
+        when(technomirClient.getListStockParts()).thenReturn(Optional.empty());
 
         assertThrows(ObjectIsEmptyException.class, () -> service.getStockParts());
-        verify(tehnomirClient, times(1)).getListStockParts();
+        verify(technomirClient, times(1)).getListStockParts();
     }
 
     @Test
     void shouldReturnPartsIfSuccessfully() {
-        PartFromTechnomir partFromTechnomir = new PartFromTechnomir();
+        TechnomirPart technomirPart = new TechnomirPart();
 
-        PartFromTechnomirWrapper partFromTechnomirWrapper = new PartFromTechnomirWrapper();
-        partFromTechnomirWrapper.setData(List.of(partFromTechnomir));
+        TechnomirPartWrapper technomirPartWrapper = new TechnomirPartWrapper();
+        technomirPartWrapper.setData(List.of(technomirPart));
 
-        when(tehnomirClient.getPartsByCode(CODE)).thenReturn(Optional.of(List.of(partFromTechnomir)));
+        when(technomirClient.getPartsByCode(CODE)).thenReturn(Optional.of(List.of(technomirPart)));
 
-        List<PartFromTechnomir> actual = service.getPartsByCode(CODE);
+        List<TechnomirPart> actual = service.getPartsByCode(CODE);
 
-        assertEquals(List.of(partFromTechnomir), actual);
-        verify(tehnomirClient, times(1)).getPartsByCode(CODE);
+        assertEquals(List.of(technomirPart), actual);
+        verify(technomirClient, times(1)).getPartsByCode(CODE);
     }
 
     @Test
     void shouldTrowExceptionIfPartsIsEmpty() {
-        when(tehnomirClient.getPartsByCode(CODE)).thenReturn(Optional.empty());
+        when(technomirClient.getPartsByCode(CODE)).thenReturn(Optional.empty());
 
-        assertThrows(ObjectIsEmptyException.class, () -> service.getPartsByCode(CODE));
-        verify(tehnomirClient, times(1)).getPartsByCode(CODE);
+        assertThrows(PartIsEmptyException.class, () -> service.getPartsByCode(CODE));
+        verify(technomirClient, times(1)).getPartsByCode(CODE);
     }
 }

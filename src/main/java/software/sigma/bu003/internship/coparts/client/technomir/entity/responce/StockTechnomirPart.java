@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class StockPartFromTechnomir {
+public class StockTechnomirPart {
 
     private Long productId;
     private String brand;

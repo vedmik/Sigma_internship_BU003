@@ -5,7 +5,6 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class StockPartFromTechnomirWrapper {
-
-    private List<StockPartFromTechnomir> data;
+public class TechnomirPartWrapper {
+    private List<TechnomirPart> data;
 }
