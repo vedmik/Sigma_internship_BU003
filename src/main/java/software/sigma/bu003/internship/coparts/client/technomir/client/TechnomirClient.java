@@ -28,7 +28,7 @@ public class TechnomirClient {
         TehnomirPayLoad tehnomirPayLoad = new TehnomirPayLoad();
         tehnomirPayLoad.setApiToken(tehnomirClientConfig.getApiToken());
 
-        String urlRequest = tehnomirClientConfig.getUrlToApi() + TechnomirApiUri.PRICE_GET_STOCK_PRICE.str;
+        String urlRequest = tehnomirClientConfig.getUrlToApi() + TechnomirApiUri.PRICE_GET_STOCK_PRICE.getStr();
         StockTechnomirPartWrapper exchange;
         try {
             exchange = restTemplate.postForObject(
@@ -49,7 +49,7 @@ public class TechnomirClient {
         tehnomirPayLoad.setCode(code);
         tehnomirPayLoad.setApiToken(tehnomirClientConfig.getApiToken());
 
-        String urlRequest = tehnomirClientConfig.getUrlToApi() + TechnomirApiUri.PRICE_POSITION_SEARCH.str;
+        String urlRequest = tehnomirClientConfig.getUrlToApi() + TechnomirApiUri.PRICE_POSITION_SEARCH.getStr();
         TechnomirPartWrapper exchange;
 
         try {

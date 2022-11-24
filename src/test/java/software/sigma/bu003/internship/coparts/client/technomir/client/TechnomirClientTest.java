@@ -15,7 +15,6 @@ import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.
 import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.StockTechnomirPartWrapper;
 import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.TechnomirPart;
 import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.StockTechnomirPart;
-import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.SupplierTehnomirPart;
 import software.sigma.bu003.internship.coparts.client.technomir.exception.TechnomirClientException;
 
 import java.util.List;
@@ -51,12 +50,11 @@ class TechnomirClientTest {
 
     private final TechnomirPartWrapper technomirPartWrapper = new TechnomirPartWrapper();
     private final TechnomirPart technomirPart = new TechnomirPart();
-    private final SupplierTehnomirPart supplierTehnomirPart = new SupplierTehnomirPart();
+
 
     @BeforeEach
     public void init(){
         stockTechnomirPartWrapper.setData(List.of(stockTechnomirPart));
-        technomirPart.setRests(List.of(supplierTehnomirPart));
         technomirPartWrapper.setData(List.of(technomirPart));
 
         String API_TOKEN = "12345";
@@ -69,7 +67,7 @@ class TechnomirClientTest {
     @Test
     void shouldReturnListStockPartsIfSuccessfully() {
         when(restTemplate.postForObject(
-                URL_TO_API + TechnomirApiUri.PRICE_GET_STOCK_PRICE.str,
+                URL_TO_API + TechnomirApiUri.PRICE_GET_STOCK_PRICE.getStr(),
                 testTehnomirPayLoad,
                 StockTechnomirPartWrapper.class)).thenReturn(stockTechnomirPartWrapper);
 
@@ -79,7 +77,7 @@ class TechnomirClientTest {
         verify(tehnomirClientConfig, times(1)).getUrlToApi();
         verify(tehnomirClientConfig, times(1)).getApiToken();
         verify(restTemplate, times(1)).postForObject(
-                URL_TO_API + TechnomirApiUri.PRICE_GET_STOCK_PRICE.str,
+                URL_TO_API + TechnomirApiUri.PRICE_GET_STOCK_PRICE.getStr(),
                 testTehnomirPayLoad,
                 StockTechnomirPartWrapper.class);
     }
@@ -87,7 +85,7 @@ class TechnomirClientTest {
     @Test
     void shouldReturnOptionalEmptyIfAPIReturnEmpty() {
         when(restTemplate.postForObject(
-                URL_TO_API + TechnomirApiUri.PRICE_GET_STOCK_PRICE.str,
+                URL_TO_API + TechnomirApiUri.PRICE_GET_STOCK_PRICE.getStr(),
                 testTehnomirPayLoad,
                 StockTechnomirPartWrapper.class)).thenReturn(null);
 
@@ -97,7 +95,7 @@ class TechnomirClientTest {
         verify(tehnomirClientConfig, times(1)).getUrlToApi();
         verify(tehnomirClientConfig, times(1)).getApiToken();
         verify(restTemplate, times(1)).postForObject(
-                URL_TO_API + TechnomirApiUri.PRICE_GET_STOCK_PRICE.str,
+                URL_TO_API + TechnomirApiUri.PRICE_GET_STOCK_PRICE.getStr(),
                 testTehnomirPayLoad,
                 StockTechnomirPartWrapper.class);
     }
@@ -105,7 +103,7 @@ class TechnomirClientTest {
     @Test
     void shouldThrowExceptionIfApiWrong() {
         when(restTemplate.postForObject(
-                URL_TO_API + TechnomirApiUri.PRICE_GET_STOCK_PRICE.str,
+                URL_TO_API + TechnomirApiUri.PRICE_GET_STOCK_PRICE.getStr(),
                 testTehnomirPayLoad,
                 StockTechnomirPartWrapper.class)).thenThrow(RestClientException.class);
 
@@ -113,7 +111,7 @@ class TechnomirClientTest {
         verify(tehnomirClientConfig, times(1)).getUrlToApi();
         verify(tehnomirClientConfig, times(1)).getApiToken();
         verify(restTemplate, times(1)).postForObject(
-                URL_TO_API + TechnomirApiUri.PRICE_GET_STOCK_PRICE.str,
+                URL_TO_API + TechnomirApiUri.PRICE_GET_STOCK_PRICE.getStr(),
                 testTehnomirPayLoad,
                 StockTechnomirPartWrapper.class);
     }
@@ -124,7 +122,7 @@ class TechnomirClientTest {
         testTehnomirPayLoad.setCode(PART_CODE);
 
         when(restTemplate.postForObject(
-                URL_TO_API + TechnomirApiUri.PRICE_POSITION_SEARCH.str,
+                URL_TO_API + TechnomirApiUri.PRICE_POSITION_SEARCH.getStr(),
                 testTehnomirPayLoad,
                 TechnomirPartWrapper.class)).thenReturn(technomirPartWrapper);
 
@@ -134,7 +132,7 @@ class TechnomirClientTest {
         verify(tehnomirClientConfig, times(1)).getUrlToApi();
         verify(tehnomirClientConfig, times(1)).getApiToken();
         verify(restTemplate, times(1)).postForObject(
-                URL_TO_API + TechnomirApiUri.PRICE_POSITION_SEARCH.str,
+                URL_TO_API + TechnomirApiUri.PRICE_POSITION_SEARCH.getStr(),
                 testTehnomirPayLoad,
                 TechnomirPartWrapper.class);
     }
@@ -144,7 +142,7 @@ class TechnomirClientTest {
         testTehnomirPayLoad.setCode(PART_CODE);
 
         when(restTemplate.postForObject(
-                URL_TO_API + TechnomirApiUri.PRICE_POSITION_SEARCH.str,
+                URL_TO_API + TechnomirApiUri.PRICE_POSITION_SEARCH.getStr(),
                 testTehnomirPayLoad,
                 TechnomirPartWrapper.class)).thenReturn(null);
 
@@ -154,7 +152,7 @@ class TechnomirClientTest {
         verify(tehnomirClientConfig, times(1)).getUrlToApi();
         verify(tehnomirClientConfig, times(1)).getApiToken();
         verify(restTemplate, times(1)).postForObject(
-                URL_TO_API + TechnomirApiUri.PRICE_POSITION_SEARCH.str,
+                URL_TO_API + TechnomirApiUri.PRICE_POSITION_SEARCH.getStr(),
                 testTehnomirPayLoad,
                 TechnomirPartWrapper.class);
     }
@@ -163,7 +161,7 @@ class TechnomirClientTest {
         testTehnomirPayLoad.setCode(PART_CODE);
 
         when(restTemplate.postForObject(
-                URL_TO_API + TechnomirApiUri.PRICE_POSITION_SEARCH.str,
+                URL_TO_API + TechnomirApiUri.PRICE_POSITION_SEARCH.getStr(),
                 testTehnomirPayLoad,
                 TechnomirPartWrapper.class)).thenThrow(RestClientException.class);
 
@@ -171,7 +169,7 @@ class TechnomirClientTest {
         verify(tehnomirClientConfig, times(1)).getUrlToApi();
         verify(tehnomirClientConfig, times(1)).getApiToken();
         verify(restTemplate, times(1)).postForObject(
-                URL_TO_API + TechnomirApiUri.PRICE_POSITION_SEARCH.str,
+                URL_TO_API + TechnomirApiUri.PRICE_POSITION_SEARCH.getStr(),
                 testTehnomirPayLoad,
                 TechnomirPartWrapper.class);
     }

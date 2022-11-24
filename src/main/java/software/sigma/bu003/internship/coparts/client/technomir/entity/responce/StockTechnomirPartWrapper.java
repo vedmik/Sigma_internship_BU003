@@ -6,6 +6,5 @@ import java.util.List;
 
 @Data
 public class StockTechnomirPartWrapper {
-
     private List<StockTechnomirPart> data;
 }

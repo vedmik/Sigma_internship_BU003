@@ -8,12 +8,32 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class TechnomirPart {
-    private Long productId;
-    private Long brandId;
+    private int productId;
+    private int brandId;
     private String brand;
     private String code;
     private String descriptionRus;
-    private Double weight;
-    private Integer isExistProductInfo;
+    private String weight;
+    private int isExistProductInfo;
     private List<SupplierTehnomirPart> rests;
+
+    @Data
+    @NoArgsConstructor
+    public class SupplierTehnomirPart {
+        private String priceLogo;
+        private String price;
+        private String currency;
+        private int quantity;
+        private String quantityType;
+        private int multiplicity;
+        private String priceQuality;
+        private int deliveryTypeId;
+        private String deliveryType;
+        private int deliveryTime;
+        private String deliveryDate;
+        private int deliveryPercent;
+        private String priceChangeDate;
+        private int isReturn;
+        private int isPriceFinal;
+    }
 }
