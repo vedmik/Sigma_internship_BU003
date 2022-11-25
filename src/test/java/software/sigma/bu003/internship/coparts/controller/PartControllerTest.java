@@ -174,4 +174,18 @@ class PartControllerTest {
 
         verify(partService).deletePart(BRAND, CODE);
     }
+
+    @Test
+    void shouldReturnListOfPartsIfSuccessfully() throws Exception {
+        List<Part> expectedList = List.of(testPart);
+
+        when(partService.saveToDBFromTechnomirClient()).thenReturn(expectedList);
+
+        mockMvc.perform(get(URL_TEMPLATE + "/update-db"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(String.format("[ %s ]", testPartJSON)));
+
+        verify(partService).saveToDBFromTechnomirClient();
+
+    }
 }

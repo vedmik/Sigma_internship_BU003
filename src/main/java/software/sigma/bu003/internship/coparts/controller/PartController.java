@@ -49,4 +49,9 @@ public class PartController {
     public void deletePart(@PathVariable String brand, @PathVariable String code) {
         partService.deletePart(brand, code);
     }
+
+    @GetMapping("/update-db")
+    public List<Part> getUpdatedParts() {
+        return partService.saveToDBFromTechnomirClient();
+    }
 }
