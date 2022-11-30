@@ -8,6 +8,7 @@ plugins {
 
 group = 'software.sigma.BU003.internship'
 version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
 
 configurations {
 	compileOnly {
@@ -27,6 +28,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
@@ -39,7 +41,7 @@ sonarqube {
 		property "sonar.projectKey", "vedmik_Sigma_internship_BU003"
 		property "sonar.organization", "vedmik"
 		property "sonar.host.url", "https://sonarcloud.io"
-		property "sonar.coverage.exclusions", "**/entity/*.*, **/entity/**/*.*, **/config/*.*"
+		property "sonar.coverage.exclusions", "**/entity/*.*, **/entity/**/*.*, **/config/*.*, **/dto/**/*.*"
 	}
 }
 

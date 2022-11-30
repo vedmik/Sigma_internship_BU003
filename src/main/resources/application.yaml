@@ -7,3 +7,6 @@ spring:
       port: 27017
       host: mongo
       authentication-database: admin
+technomir-api:
+  url-to-api: https://api.tehnomir.com.ua
+  api-token: cmFkLGcROJnATF0YCpB6sh4kv04s3Z7s
