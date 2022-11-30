@@ -1,8 +1,10 @@
-package software.sigma.bu003.internship.coparts.client.technomir.entity.responce;
+package software.sigma.bu003.internship.coparts.client.technomir.dto.responce;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import software.sigma.bu003.internship.coparts.entity.Currency;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -15,14 +17,14 @@ public class TechnomirPart {
     private String descriptionRus;
     private String weight;
     private int isExistProductInfo;
-    private List<SupplierTehnomirPart> rests;
+    private List<SupplierTechnomirPart> rests;
 
     @Data
     @NoArgsConstructor
-    public class SupplierTehnomirPart {
+    public class SupplierTechnomirPart {
         private String priceLogo;
         private String price;
-        private String currency;
+        private Currency currency;
         private int quantity;
         private String quantityType;
         private int multiplicity;
@@ -30,9 +32,9 @@ public class TechnomirPart {
         private int deliveryTypeId;
         private String deliveryType;
         private int deliveryTime;
-        private String deliveryDate;
+        private LocalDateTime deliveryDate;
         private int deliveryPercent;
-        private String priceChangeDate;
+        private LocalDateTime priceChangeDate;
         private int isReturn;
         private int isPriceFinal;
     }

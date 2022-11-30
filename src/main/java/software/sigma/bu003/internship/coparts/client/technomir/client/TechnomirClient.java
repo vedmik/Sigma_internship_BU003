@@ -5,12 +5,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import software.sigma.bu003.internship.coparts.client.technomir.config.TechnomirApiUri;
-import software.sigma.bu003.internship.coparts.client.technomir.entity.request.TehnomirPayLoad;
-import software.sigma.bu003.internship.coparts.client.technomir.config.TehnomirClientConfig;
-import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.TechnomirPart;
-import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.TechnomirPartWrapper;
-import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.StockTechnomirPart;
-import software.sigma.bu003.internship.coparts.client.technomir.entity.responce.StockTechnomirPartWrapper;
+import software.sigma.bu003.internship.coparts.client.technomir.dto.request.TechnomirPayLoad;
+import software.sigma.bu003.internship.coparts.client.technomir.config.TechnomirClientConfig;
+import software.sigma.bu003.internship.coparts.client.technomir.dto.responce.TechnomirPart;
+import software.sigma.bu003.internship.coparts.client.technomir.dto.responce.TechnomirPartWrapper;
+import software.sigma.bu003.internship.coparts.client.technomir.dto.responce.StockTechnomirPart;
+import software.sigma.bu003.internship.coparts.client.technomir.dto.responce.StockTechnomirPartWrapper;
 import software.sigma.bu003.internship.coparts.client.technomir.exception.TechnomirClientException;
 
 import java.util.List;
@@ -22,47 +22,46 @@ public class TechnomirClient {
 
     private final RestTemplate restTemplate;
 
-    private final TehnomirClientConfig tehnomirClientConfig;
+    private final TechnomirClientConfig technomirClientConfig;
 
     public Optional<List<StockTechnomirPart>> getListStockParts() {
-        TehnomirPayLoad tehnomirPayLoad = new TehnomirPayLoad();
-        tehnomirPayLoad.setApiToken(tehnomirClientConfig.getApiToken());
+        TechnomirPayLoad technomirPayLoad = new TechnomirPayLoad(technomirClientConfig.getApiToken());
 
-        String urlRequest = tehnomirClientConfig.getUrlToApi() + TechnomirApiUri.PRICE_GET_STOCK_PRICE.getStr();
-        StockTechnomirPartWrapper exchange;
+        String urlRequest = technomirClientConfig.getUrlToApi() + TechnomirApiUri.PRICE_GET_STOCK_PRICE.getStr();
+
+        StockTechnomirPartWrapper technomirResponse;
         try {
-            exchange = restTemplate.postForObject(
+            technomirResponse = restTemplate.postForObject(
                     urlRequest,
-                    tehnomirPayLoad,
+                    technomirPayLoad,
                     StockTechnomirPartWrapper.class);
 
         } catch (RestClientException ex) {
-            throw new TechnomirClientException(ex);
+            throw new TechnomirClientException(urlRequest, technomirPayLoad, ex);
         }
 
-        return Optional.ofNullable(exchange)
+        return Optional.ofNullable(technomirResponse)
                 .map(StockTechnomirPartWrapper::getData);
     }
 
     public Optional<List<TechnomirPart>> getPartsByCode(String code) {
-        TehnomirPayLoad tehnomirPayLoad = new TehnomirPayLoad();
-        tehnomirPayLoad.setCode(code);
-        tehnomirPayLoad.setApiToken(tehnomirClientConfig.getApiToken());
+        TechnomirPayLoad technomirPayLoad = new TechnomirPayLoad(technomirClientConfig.getApiToken());
+        technomirPayLoad.setCode(code);
 
-        String urlRequest = tehnomirClientConfig.getUrlToApi() + TechnomirApiUri.PRICE_POSITION_SEARCH.getStr();
-        TechnomirPartWrapper exchange;
+        String urlRequest = technomirClientConfig.getUrlToApi() + TechnomirApiUri.PRICE_POSITION_SEARCH.getStr();
 
+        TechnomirPartWrapper technomirResponse;
         try {
-            exchange = restTemplate.postForObject(
+            technomirResponse = restTemplate.postForObject(
                     urlRequest,
-                    tehnomirPayLoad,
+                    technomirPayLoad,
                     TechnomirPartWrapper.class);
 
         } catch (RestClientException ex) {
-            throw new TechnomirClientException(ex);
+            throw new TechnomirClientException(urlRequest, technomirPayLoad, ex);
         }
 
-        return Optional.ofNullable(exchange)
+        return Optional.ofNullable(technomirResponse)
                 .map(TechnomirPartWrapper::getData);
     }
 }

@@ -1,4 +1,4 @@
-package software.sigma.bu003.internship.coparts.client.technomir.entity.responce;
+package software.sigma.bu003.internship.coparts.client.technomir.dto.responce;
 
 import lombok.Data;
 

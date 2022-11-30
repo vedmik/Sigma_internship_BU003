@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Slf4j
 public class GlobalTechnomirClientExceptionHandler {
 
-    @ExceptionHandler(ObjectIsEmptyException.class)
+    @ExceptionHandler(TechnomirEmptyStockException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public String objectIsEmptyException(ObjectIsEmptyException ex) {
+    public String technomirEmptyStockException(TechnomirEmptyStockException ex) {
         log.error(ex.getMessage(), ex);
         return ex.getMessage();
     }
 
-    @ExceptionHandler(PartIsEmptyException.class)
+    @ExceptionHandler(TechnomirPartNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public String partIsEmptyException(PartIsEmptyException ex) {
+    public String technomirPartNotFoundException(TechnomirPartNotFoundException ex) {
         log.error(ex.getMessage(), ex);
         return ex.getMessage();
     }
