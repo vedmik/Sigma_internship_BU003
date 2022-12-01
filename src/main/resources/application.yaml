@@ -5,8 +5,12 @@ spring:
       password: example
       database: vedmik
       port: 27017
-      host: mongo
+      host: localhost
       authentication-database: admin
+  datasource:
+    url: jdbc:mysql://localhost:3306/coparts
+    username: user
+    password: root
 technomir-api:
   url-to-api: https://api.tehnomir.com.ua
   api-token: cmFkLGcROJnATF0YCpB6sh4kv04s3Z7s
