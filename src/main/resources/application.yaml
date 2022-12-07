@@ -3,7 +3,7 @@ spring:
     mongodb:
       username: root
       password: example
-      database: vedmik
+      database: coparts
       port: 27017
       host: localhost
       authentication-database: admin

@@ -179,13 +179,13 @@ class PartControllerTest {
     void shouldReturnListOfPartsIfSuccessfully() throws Exception {
         List<Part> expectedList = List.of(testPart);
 
-        when(partService.saveToDBFromTechnomirClient()).thenReturn(expectedList);
+        when(partService.synchronizeWithTechnomir()).thenReturn(expectedList);
 
-        mockMvc.perform(get(URL_TEMPLATE + "/update-db"))
+        mockMvc.perform(get(URL_TEMPLATE + "/synchronization"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(String.format("[ %s ]", testPartJSON)));
 
-        verify(partService).saveToDBFromTechnomirClient();
+        verify(partService).synchronizeWithTechnomir();
 
     }
 }

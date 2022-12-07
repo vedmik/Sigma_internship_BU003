@@ -51,7 +51,7 @@ public class PartService {
                 .orElseThrow(() -> new PartNotFoundException(brand, code));
     }
 
-    public List<Part> saveToDBFromTechnomirClient() {
+    public List<Part> synchronizeWithTechnomir() {
 
         return partRepository.saveAll(copartsClient.getAllParts());
     }

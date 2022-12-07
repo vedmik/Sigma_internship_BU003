@@ -3,8 +3,10 @@ package software.sigma.bu003.internship.coparts.client.technomir.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import software.sigma.bu003.internship.coparts.client.technomir.dto.responce.StockTechnomirPart;
+import software.sigma.bu003.internship.coparts.client.technomir.dto.responce.SupplierTechnomirPart;
 import software.sigma.bu003.internship.coparts.client.technomir.dto.responce.TechnomirPart;
 import software.sigma.bu003.internship.coparts.entity.Part;
+import software.sigma.bu003.internship.coparts.entity.SupplierPart;
 
 import java.util.List;
 
@@ -17,12 +19,12 @@ public interface TechnomirMapper {
     @Mapping(target = "description", source = "descriptionRus")
     Part fromStockTechnomirPartToPart(StockTechnomirPart stockTechnomirPart);
 
-    default List<Part.Supplier> fromStockTechnomirPartToPartSupplier(StockTechnomirPart stockTechnomirPart){
-        Part.Supplier supplier = new Part.Supplier();
-
-        supplier.setPriceLogo("stock");
-        supplier.setPrice(stockTechnomirPart.getPrice());
-        supplier.setCurrency(stockTechnomirPart.getCurrency());
+    default List<SupplierPart> fromStockTechnomirPartToPartSupplier(StockTechnomirPart stockTechnomirPart){
+        SupplierPart supplier = SupplierPart.builder()
+                .priceLogo("stock")
+                .price(stockTechnomirPart.getPrice())
+                .currency(stockTechnomirPart.getCurrency())
+                .build();
 
         return List.of(supplier);
     }
@@ -33,6 +35,6 @@ public interface TechnomirMapper {
     @Mapping(target = "description", source = "descriptionRus")
     Part fromTehnomirPartToPart(TechnomirPart technomirPart);
 
-    List<Part.Supplier> fromTehnomirPartSupplierToPartSupplier(
-            List<TechnomirPart.SupplierTechnomirPart> supplierTehnomirPartList);
+    List<SupplierPart> fromTehnomirPartSupplierToPartSupplier(
+            List<SupplierTechnomirPart> supplierTehnomirPartList);
 }

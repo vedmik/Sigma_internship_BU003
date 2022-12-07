@@ -50,8 +50,8 @@ public class PartController {
         partService.deletePart(brand, code);
     }
 
-    @GetMapping("/update-db")
+    @GetMapping("/synchronization")
     public List<Part> getUpdatedParts() {
-        return partService.saveToDBFromTechnomirClient();
+        return partService.synchronizeWithTechnomir();
     }
 }

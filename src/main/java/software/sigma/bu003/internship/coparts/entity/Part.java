@@ -1,7 +1,6 @@
 package software.sigma.bu003.internship.coparts.entity;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,7 +19,7 @@ public class Part {
     @NotNull
     private String code;
     private String description;
-    private List<Supplier> supplierList;
+    private List<SupplierPart> supplierList;
 
 
     @PersistenceCreator
@@ -29,13 +28,4 @@ public class Part {
         this.code = code;
         this.id = brand.replaceAll("\\s","") + code;
     }
-
-    @Data
-    @NoArgsConstructor
-    public static class Supplier {
-        private String priceLogo;
-        private String price;
-        private Currency currency;
-    }
-
 }
