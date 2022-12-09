@@ -6,6 +6,7 @@ import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 
 @Data
@@ -17,13 +18,14 @@ public class Part {
     private String brand;
     @NotNull
     private String code;
-    private Double price;
     private String description;
+    private List<SupplierPart> supplierList;
+
 
     @PersistenceCreator
     public Part(@NotNull String brand, @NotNull String code){
         this.brand = brand;
         this.code = code;
-        this.id = brand + code;
+        this.id = brand.replaceAll("\\s","") + code;
     }
 }

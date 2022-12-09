@@ -36,7 +36,7 @@ class TechnomirClientTest {
     private TechnomirClientConfig technomirClientConfig;
 
     @InjectMocks
-    private TechnomirClient serviceUnderTest;
+    private TechnomirClient sut;
 
     private final String URL_TO_API = "http://test:8080";
 
@@ -70,7 +70,7 @@ class TechnomirClientTest {
                 testTechnomirPayLoad,
                 StockTechnomirPartWrapper.class)).thenReturn(stockTechnomirPartWrapper);
 
-        Optional<List<StockTechnomirPart>> actual = serviceUnderTest.getListStockParts();
+        Optional<List<StockTechnomirPart>> actual = sut.getListStockParts();
 
         assertEquals(Optional.of(List.of(stockTechnomirPart)), actual);
         verify(restTemplate, times(1)).postForObject(
@@ -86,7 +86,7 @@ class TechnomirClientTest {
                 testTechnomirPayLoad,
                 StockTechnomirPartWrapper.class)).thenReturn(null);
 
-        Optional<List<StockTechnomirPart>> actual = serviceUnderTest.getListStockParts();
+        Optional<List<StockTechnomirPart>> actual = sut.getListStockParts();
 
         assertEquals(Optional.empty(), actual);
         verify(restTemplate, times(1)).postForObject(
@@ -102,7 +102,7 @@ class TechnomirClientTest {
                 testTechnomirPayLoad,
                 StockTechnomirPartWrapper.class)).thenThrow(RestClientException.class);
 
-        assertThrows(TechnomirClientException.class, () -> serviceUnderTest.getListStockParts());
+        assertThrows(TechnomirClientException.class, () -> sut.getListStockParts());
         verify(restTemplate, times(1)).postForObject(
                 URL_TO_API + TechnomirApiUri.PRICE_GET_STOCK_PRICE.getStr(),
                 testTechnomirPayLoad,
@@ -118,7 +118,7 @@ class TechnomirClientTest {
                 testTechnomirPayLoad,
                 TechnomirPartWrapper.class)).thenReturn(technomirPartWrapper);
 
-        serviceUnderTest.getPartsByCode(PART_CODE);
+        sut.getPartsByCode(PART_CODE);
 
         verify(restTemplate, times(1)).postForObject(
                 URL_TO_API + TechnomirApiUri.PRICE_POSITION_SEARCH.getStr(),
@@ -135,7 +135,7 @@ class TechnomirClientTest {
                 testTechnomirPayLoad,
                 TechnomirPartWrapper.class)).thenReturn(null);
 
-        Optional<List<TechnomirPart>> actual = serviceUnderTest.getPartsByCode(PART_CODE);
+        Optional<List<TechnomirPart>> actual = sut.getPartsByCode(PART_CODE);
 
         assertEquals(Optional.empty(), actual);
         verify(restTemplate, times(1)).postForObject(
@@ -153,7 +153,7 @@ class TechnomirClientTest {
                 testTechnomirPayLoad,
                 TechnomirPartWrapper.class)).thenThrow(RestClientException.class);
 
-        assertThrows(TechnomirClientException.class, () -> serviceUnderTest.getPartsByCode(PART_CODE));
+        assertThrows(TechnomirClientException.class, () -> sut.getPartsByCode(PART_CODE));
         verify(restTemplate, times(1)).postForObject(
                 URL_TO_API + TechnomirApiUri.PRICE_POSITION_SEARCH.getStr(),
                 testTechnomirPayLoad,

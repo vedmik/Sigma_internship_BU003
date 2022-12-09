@@ -2,6 +2,7 @@ package software.sigma.bu003.internship.coparts.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import software.sigma.bu003.internship.coparts.client.CopartsClient;
 import software.sigma.bu003.internship.coparts.entity.Part;
 import software.sigma.bu003.internship.coparts.service.exception.PartNotFoundException;
 import software.sigma.bu003.internship.coparts.repository.PartRepository;
@@ -14,6 +15,8 @@ import java.util.List;
 public class PartService {
 
     private final PartRepository partRepository;
+
+    private final CopartsClient copartsClient;
 
     public Part createPart(Part part) {
         try {
@@ -44,7 +47,12 @@ public class PartService {
     }
 
     private Part checkIfPartExistsInDB(String brand, String code){
-        return partRepository.findById(brand + code)
+        return partRepository.findById(brand.replaceAll("\\s","") + code)
                 .orElseThrow(() -> new PartNotFoundException(brand, code));
+    }
+
+    public List<Part> synchronizeWithTechnomir() {
+
+        return partRepository.saveAll(copartsClient.getAllParts());
     }
 }

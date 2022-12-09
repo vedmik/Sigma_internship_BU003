@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import software.sigma.bu003.internship.coparts.client.CopartsClient;
 import software.sigma.bu003.internship.coparts.entity.Part;
 import software.sigma.bu003.internship.coparts.service.exception.PartAlreadyCreatedException;
 import software.sigma.bu003.internship.coparts.service.exception.PartNotFoundException;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -24,10 +26,13 @@ import static org.mockito.Mockito.when;
 class PartServiceTest {
 
     @Mock
-    private PartRepository repository;
+    private PartRepository partRepository;
+
+    @Mock
+    private CopartsClient copartsClient;
 
     @InjectMocks
-    private PartService serviceUnderTest;
+    private PartService sut;
 
     private final String BRAND = "Audi";
     private final String CODE = "vw12345";
@@ -36,95 +41,105 @@ class PartServiceTest {
 
     @Test
     void shouldCreatePartSuccessfully() {
-        when(repository.insert(testPart)).thenReturn(testPart);
+        when(partRepository.insert(testPart)).thenReturn(testPart);
 
-        serviceUnderTest.createPart(testPart);
+        sut.createPart(testPart);
         
-        verify(repository, times(1)).insert(testPart);
+        verify(partRepository, times(1)).insert(testPart);
     }
 
     @Test
     void shouldThrowExceptionIfPartAlreadyCreated() {
-        when(repository.insert(testPart)).thenThrow(new RuntimeException());
+        when(partRepository.insert(testPart)).thenThrow(new RuntimeException());
 
-        assertThrows(PartAlreadyCreatedException.class, () -> serviceUnderTest.createPart(testPart)
+        assertThrows(PartAlreadyCreatedException.class, () -> sut.createPart(testPart)
         );
 
-        verify(repository, times(1)).insert(testPart);
+        verify(partRepository, times(1)).insert(testPart);
     }
 
     @Test
     void shouldReturnAllPartsSuccessfully() {
-        when(repository.findAll()).thenReturn(List.of(testPart));
+        when(partRepository.findAll()).thenReturn(List.of(testPart));
 
-        serviceUnderTest.getAllParts();
+        sut.getAllParts();
 
-        verify(repository, times(1)).findAll();
+        verify(partRepository, times(1)).findAll();
     }
 
     @Test
     void shouldReturnPartByBrandAndCodeSuccessfully() {
-        when(repository.findById(PART_ID)).thenReturn(Optional.of(testPart));
+        when(partRepository.findById(PART_ID)).thenReturn(Optional.of(testPart));
 
-        Part actual = serviceUnderTest.getPart(BRAND, CODE);
+        Part actual = sut.getPart(BRAND, CODE);
 
         assertEquals(testPart, actual);
-        verify(repository, times(1)).findById(BRAND + CODE);
+        verify(partRepository, times(1)).findById(BRAND + CODE);
     }
 
     @Test
     void shouldThrowExceptionIfPartNotFound() {
-        when(repository.findById(PART_ID)).thenReturn(Optional.empty());
+        when(partRepository.findById(PART_ID)).thenReturn(Optional.empty());
 
-        assertThrows(PartNotFoundException.class, () -> serviceUnderTest.getPart(BRAND, CODE)
+        assertThrows(PartNotFoundException.class, () -> sut.getPart(BRAND, CODE)
         );
 
-        verify(repository, times(1)).findById(PART_ID);
+        verify(partRepository, times(1)).findById(PART_ID);
     }
 
     @Test
     void shouldUpdatePartSuccessfully() {
         Part expected = new Part(BRAND, CODE);
-        expected.setPrice(300D);
         expected.setDescription("111");
 
-        when(repository.findById(PART_ID)).thenReturn(Optional.of(testPart));
-        when(repository.save(expected)).thenReturn(expected);
+        when(partRepository.findById(PART_ID)).thenReturn(Optional.of(testPart));
+        when(partRepository.save(expected)).thenReturn(expected);
 
-        Part actual = serviceUnderTest.updatePart(expected);
+        Part actual = sut.updatePart(expected);
 
         assertEquals(expected, actual);
-        verify(repository, times(1)).findById(PART_ID);
-        verify(repository, times(1)).save(expected);
+        verify(partRepository, times(1)).findById(PART_ID);
+        verify(partRepository, times(1)).save(expected);
     }
 
     @Test
     void shouldThrowExceptionIfUpdatedPartNotFound() {
-        when(repository.findById(PART_ID)).thenReturn(Optional.empty());
+        when(partRepository.findById(PART_ID)).thenReturn(Optional.empty());
 
-        assertThrows(PartNotFoundException.class, () -> serviceUnderTest.updatePart(testPart)
+        assertThrows(PartNotFoundException.class, () -> sut.updatePart(testPart)
         );
 
-        verify(repository, times(1)).findById(PART_ID);
+        verify(partRepository, times(1)).findById(PART_ID);
     }
 
     @Test
     void shouldDeletePartSuccessfully() {
-        when(repository.findById(PART_ID)).thenReturn(Optional.of(testPart));
-        doNothing().when(repository).deleteById(PART_ID);
+        when(partRepository.findById(PART_ID)).thenReturn(Optional.of(testPart));
+        doNothing().when(partRepository).deleteById(PART_ID);
 
-        serviceUnderTest.deletePart(BRAND, CODE);
+        sut.deletePart(BRAND, CODE);
 
-        verify(repository, times(1)).findById(PART_ID);
-        verify(repository, times(1)).deleteById(PART_ID);
+        verify(partRepository, times(1)).findById(PART_ID);
+        verify(partRepository, times(1)).deleteById(PART_ID);
     }
 
     @Test
     void shouldThrowExceptionIfDeletedPartNotFound() {
-        when(repository.findById(PART_ID)).thenReturn(Optional.empty());
+        when(partRepository.findById(PART_ID)).thenReturn(Optional.empty());
 
-        assertThrows(PartNotFoundException.class, () -> serviceUnderTest.deletePart(BRAND, CODE));
+        assertThrows(PartNotFoundException.class, () -> sut.deletePart(BRAND, CODE));
 
-        verify(repository, times(1)).findById(PART_ID);
+        verify(partRepository, times(1)).findById(PART_ID);
+    }
+
+    @Test
+    void shouldReturnListPartsFromDB() {
+        when(copartsClient.getAllParts()).thenReturn(List.of(testPart));
+        when(partRepository.saveAll(anyList())).thenReturn(List.of(testPart));
+
+        sut.synchronizeWithTechnomir();
+
+        verify(partRepository, times(1)).saveAll(anyList());
+        verify(copartsClient, times(1)).getAllParts();
     }
 }

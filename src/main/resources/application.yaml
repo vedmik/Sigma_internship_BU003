@@ -3,9 +3,9 @@ spring:
     mongodb:
       username: root
       password: example
-      database: vedmik
+      database: coparts
       port: 27017
-      host: mongo
+      host: localhost
       authentication-database: admin
 technomir-api:
   url-to-api: https://api.tehnomir.com.ua

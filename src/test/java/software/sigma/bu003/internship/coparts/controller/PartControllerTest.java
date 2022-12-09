@@ -174,4 +174,18 @@ class PartControllerTest {
 
         verify(partService).deletePart(BRAND, CODE);
     }
+
+    @Test
+    void shouldReturnListOfPartsIfSuccessfully() throws Exception {
+        List<Part> expectedList = List.of(testPart);
+
+        when(partService.synchronizeWithTechnomir()).thenReturn(expectedList);
+
+        mockMvc.perform(get(URL_TEMPLATE + "/synchronization"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(String.format("[ %s ]", testPartJSON)));
+
+        verify(partService).synchronizeWithTechnomir();
+
+    }
 }
