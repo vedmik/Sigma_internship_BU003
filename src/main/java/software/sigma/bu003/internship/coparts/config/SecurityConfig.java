@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import software.sigma.bu003.internship.coparts.security.service.CustomOidcUserService;
 import software.sigma.bu003.internship.coparts.security.service.UserService;
 
@@ -37,6 +38,9 @@ public class SecurityConfig {
                     .oauth2Login()
                         .userInfoEndpoint().oidcUserService(customOidcUserService)
                     .and()
+                .and()
+                    .csrf()
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
                 .build();
     }
