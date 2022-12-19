@@ -149,7 +149,7 @@ docker compose version
 - **2.7 Download docker-compose.aws.yml**<br>
 
 ```
-curl -L https://raw.githubusercontent.com/vedmik/coparts/e6ff3d22222bf6725f080c1af1fa8b1cd8c95996/docker/docker-compose.yaml > ~/docker-compose.yml
+curl -L https://raw.githubusercontent.com/vedmik/coparts/e6ff3d22222bf6725f080c1af1fa8b1cd8c95996/docker/docker-compose.aws.yml > ~/docker-compose.yml
 ```
 
 

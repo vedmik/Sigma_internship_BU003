@@ -5,7 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import software.sigma.bu003.internship.coparts.security.model.Role;
+import software.sigma.bu003.internship.coparts.security.model.UserRole;
 import software.sigma.bu003.internship.coparts.security.model.User;
 import software.sigma.bu003.internship.coparts.security.repository.UserRepository;
 import software.sigma.bu003.internship.coparts.security.service.exception.UserNotFoundException;
@@ -32,7 +32,7 @@ class UserServiceTest {
 
     private static final String EMAIL = "test@test.com";
 
-    static final Set<Role> ALL_ROLES = new HashSet<>(List.of(Role.SCOPE_ADMIN, Role.SCOPE_MANAGER));
+    static final Set<UserRole> ALL_ROLES = new HashSet<>(List.of(UserRole.SCOPE_ADMIN, UserRole.SCOPE_MANAGER));
     private static final User testUser = User.builder()
             .roles(ALL_ROLES)
             .build();
@@ -65,11 +65,11 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldAddNewRoleToUserIfSuccessfully() {
+    void shouldAddNewUserRoleIfSuccessfully() {
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(testUser));
         when(userRepository.save(testUser)).thenReturn(any());
 
-        sut.addNewRoleToUser(EMAIL, Role.SCOPE_MANAGER);
+        sut.addUserRoles(EMAIL, List.of(UserRole.SCOPE_MANAGER));
 
         verify(userRepository, times(1)).findByEmail(EMAIL);
         verify(userRepository, times(1)).save(testUser);
@@ -80,7 +80,7 @@ class UserServiceTest {
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(testUser));
         when(userRepository.save(testUser)).thenReturn(any());
 
-        sut.deleteRole(EMAIL, Role.SCOPE_MANAGER);
+        sut.deleteUserRole(EMAIL, UserRole.SCOPE_MANAGER);
 
         verify(userRepository, times(1)).findByEmail(EMAIL);
         verify(userRepository, times(1)).save(testUser);
@@ -93,5 +93,23 @@ class UserServiceTest {
         sut.getAllUserRoles(EMAIL);
 
         verify(userRepository, times(1)).findByEmail(EMAIL);
+    }
+
+    @Test
+    void shouldReturnOptionalUserByEmailIfSuccessfully() {
+        when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(testUser));
+
+        sut.getOptionalUserByEmail(EMAIL);
+
+        verify(userRepository, times(1)).findByEmail(EMAIL);
+    }
+
+    @Test
+    void shouldSaveUserIfSuccessfully() {
+        when(userRepository.save(testUser)).thenReturn(any());
+
+        sut.saveUser(testUser);
+
+        verify(userRepository, times(1)).save(testUser);
     }
 }

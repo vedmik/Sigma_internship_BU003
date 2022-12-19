@@ -2,12 +2,13 @@ package software.sigma.bu003.internship.coparts.security.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import software.sigma.bu003.internship.coparts.security.model.Role;
+import software.sigma.bu003.internship.coparts.security.model.UserRole;
 import software.sigma.bu003.internship.coparts.security.model.User;
 import software.sigma.bu003.internship.coparts.security.repository.UserRepository;
 import software.sigma.bu003.internship.coparts.security.service.exception.UserNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -26,16 +27,16 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(email));
     }
 
-    public void addNewRoleToUser(String email, Role role) {
+    public void addUserRoles(String email, List<UserRole> roles) {
        User user = getUserByEmail(email);
 
-       user.getRoles().add(role);
+       user.getRoles().addAll(roles);
 
        userRepository.save(user);
     }
 
 
-    public void deleteRole(String email, Role role) {
+    public void deleteUserRole(String email, UserRole role) {
         User user = getUserByEmail(email);
 
         user.getRoles().remove(role);
@@ -43,7 +44,15 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public Set<Role> getAllUserRoles(String email) {
+    public Set<UserRole> getAllUserRoles(String email) {
         return getUserByEmail(email).getRoles();
+    }
+
+    public Optional<User> getOptionalUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public void saveUser(User user) {
+        userRepository.save(user);
     }
 }

@@ -25,17 +25,17 @@ public class User {
 
     @Id
     private int id;
+
     private String googleId;
-    private String fullName;
-    private String givenName;
-    private String familyName;
+    private String firstName;
+    private String lastName;
     private String locale;
     private String email;
     private String imageUrl;
     private LocalDateTime lastVisit;
 
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = UserRole.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
+    private Set<UserRole> roles;
 }

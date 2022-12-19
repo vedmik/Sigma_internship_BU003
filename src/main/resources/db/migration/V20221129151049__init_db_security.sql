@@ -1,9 +1,8 @@
 CREATE TABLE user(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    google_id varchar(255),
-    full_name VARCHAR(50),
-    given_name VARCHAR(50),
-    family_name VARCHAR(50),
+    google_id VARCHAR(50),
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
     email VARCHAR(100) NOT NULL UNIQUE ,
     locale VARCHAR(15),
     image_url VARCHAR(200),

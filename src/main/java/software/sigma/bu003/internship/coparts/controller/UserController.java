@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import software.sigma.bu003.internship.coparts.security.model.Role;
+import software.sigma.bu003.internship.coparts.security.model.UserRole;
 import software.sigma.bu003.internship.coparts.security.model.User;
 import software.sigma.bu003.internship.coparts.security.service.UserService;
 
@@ -15,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-public class UserAndRoleController {
+public class UserController {
 
     private final UserService userService;
 
@@ -30,17 +32,17 @@ public class UserAndRoleController {
     }
 
     @GetMapping("/roles")
-    public List<Role> getAllRoles() {
-        return List.of(Role.values());
+    public List<UserRole> getAllRoles() {
+        return List.of(UserRole.values());
     }
 
-    @GetMapping("/{email}/roles/{role}")
-    public void setRoleToUser(@PathVariable String email, @PathVariable Role role) {
-        userService.addNewRoleToUser(email, role);
+    @PostMapping("/{email}")
+    public void addUserRoles(@PathVariable String email, @RequestBody List<UserRole> roles) {
+        userService.addUserRoles(email, roles);
     }
 
-    @DeleteMapping("/{email}/roles/{role}")
-    public void deleteRoleToUser(@PathVariable String email, @PathVariable Role role) {
-        userService.deleteRole(email, role);
+    @DeleteMapping("/{email}/{role}")
+    public void deleteRoleToUser(@PathVariable String email, @PathVariable UserRole role) {
+        userService.deleteUserRole(email, role);
     }
 }

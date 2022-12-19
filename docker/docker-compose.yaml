@@ -1,8 +1,8 @@
 version: "3.8"
 services:
-  mongo:
+  mongodb:
     image: mongo
-    container_name: mongo
+    container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
@@ -12,11 +12,11 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
       MONGO_INITDB_DATABASE: coparts
-  mysql:
+  mysqldb:
     image: mysql:8.0.31
-    container_name: mysql
+    container_name: mysqldb
     environment:
-      MYSQL_ROOT_PASSWORD: "root_password"
+      MYSQL_ROOT_PASSWORD: "root"
       MYSQL_DATABASE: "coparts"
       MYSQL_USER: "user"
       MYSQL_PASSWORD: "root"
