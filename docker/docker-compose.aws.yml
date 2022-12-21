@@ -1,31 +1,44 @@
 version: "3.8"
 services:
-  mongo:
+  mongodb:
     image: mongo
     container_name: mongodb
     ports:
-      - 27017:27017
+      - "27017:27017"
     volumes:
       - mongodb-data:/data/db
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_INITDB_DATABASE: vedmik
-    healthcheck:
-      test: "exit 0"
-  coparts:
-    image: vedmik/coparts-docker
-    container_name: coparts-app
+      MONGO_INITDB_DATABASE: coparts
+  app:
+    image: vedmik/coparts
+    container_name: app
     ports:
-      - 80:8080
+      - "80:8080"
     restart: always
     depends_on:
-      mongo:
-        condition: service_healthy
+      - mongodb
+      - mysqldb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb/coparts
+      SPRING_DATA_MONGODB_HOST: mongodb
+  mysqldb:
+    image: mysql:8.0.31
+    container_name: mysqldb
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "coparts"
+      MYSQL_USER: "user"
+      MYSQL_PASSWORD: "root"
+    ports: [ "3306:3306" ]
+    volumes:
+      - mysql-data:/var/lib/mysql
 
 volumes:
   mongodb-data: {}
+  mysql-data: {}
 
 networks:
   default:

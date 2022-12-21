@@ -7,6 +7,17 @@ spring:
       port: 27017
       host: localhost
       authentication-database: admin
+  datasource:
+    url: jdbc:mysql://localhost:3306/coparts
+    username: user
+    password: root
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 725259427942-c3sn7phpq23f8n88m9159bdah9v6vise.apps.googleusercontent.com
+            client-secret: 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
 technomir-api:
   url-to-api: https://api.tehnomir.com.ua
   api-token: cmFkLGcROJnATF0YCpB6sh4kv04s3Z7s
