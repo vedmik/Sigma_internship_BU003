@@ -1,6 +1,6 @@
 package software.sigma.bu003.internship.coparts.client;
 
-import software.sigma.bu003.internship.coparts.entity.Part;
+import software.sigma.bu003.internship.coparts.part.entity.Part;
 
 import java.util.List;
 

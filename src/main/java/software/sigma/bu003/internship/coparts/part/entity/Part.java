@@ -1,4 +1,4 @@
-package software.sigma.bu003.internship.coparts.entity;
+package software.sigma.bu003.internship.coparts.part.entity;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;

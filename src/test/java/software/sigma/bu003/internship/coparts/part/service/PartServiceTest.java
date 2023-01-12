@@ -1,4 +1,4 @@
-package software.sigma.bu003.internship.coparts.service;
+package software.sigma.bu003.internship.coparts.part.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -6,10 +6,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import software.sigma.bu003.internship.coparts.client.CopartsClient;
-import software.sigma.bu003.internship.coparts.entity.Part;
-import software.sigma.bu003.internship.coparts.service.exception.PartAlreadyCreatedException;
-import software.sigma.bu003.internship.coparts.service.exception.PartNotFoundException;
-import software.sigma.bu003.internship.coparts.repository.PartRepository;
+import software.sigma.bu003.internship.coparts.part.entity.Part;
+import software.sigma.bu003.internship.coparts.part.repository.PartRepository;
+import software.sigma.bu003.internship.coparts.part.service.exception.PartAlreadyCreatedException;
+import software.sigma.bu003.internship.coparts.part.service.exception.PartNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,8 +52,7 @@ class PartServiceTest {
     void shouldThrowExceptionIfPartAlreadyCreated() {
         when(partRepository.insert(testPart)).thenThrow(new RuntimeException());
 
-        assertThrows(PartAlreadyCreatedException.class, () -> sut.createPart(testPart)
-        );
+        assertThrows(PartAlreadyCreatedException.class, () -> sut.createPart(testPart));
 
         verify(partRepository, times(1)).insert(testPart);
     }

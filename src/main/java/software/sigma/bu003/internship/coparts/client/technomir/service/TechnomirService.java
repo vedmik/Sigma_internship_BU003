@@ -7,7 +7,7 @@ import software.sigma.bu003.internship.coparts.client.technomir.client.Technomir
 import software.sigma.bu003.internship.coparts.client.technomir.exception.TechnomirEmptyStockException;
 import software.sigma.bu003.internship.coparts.client.technomir.exception.TechnomirPartNotFoundException;
 import software.sigma.bu003.internship.coparts.client.technomir.mapper.TechnomirMapper;
-import software.sigma.bu003.internship.coparts.entity.Part;
+import software.sigma.bu003.internship.coparts.part.entity.Part;
 
 import java.util.List;
 

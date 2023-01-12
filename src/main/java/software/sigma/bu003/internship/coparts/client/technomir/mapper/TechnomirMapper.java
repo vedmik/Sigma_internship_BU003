@@ -5,8 +5,8 @@ import org.mapstruct.Mapping;
 import software.sigma.bu003.internship.coparts.client.technomir.dto.responce.StockTechnomirPart;
 import software.sigma.bu003.internship.coparts.client.technomir.dto.responce.SupplierTechnomirPart;
 import software.sigma.bu003.internship.coparts.client.technomir.dto.responce.TechnomirPart;
-import software.sigma.bu003.internship.coparts.entity.Part;
-import software.sigma.bu003.internship.coparts.entity.SupplierPart;
+import software.sigma.bu003.internship.coparts.part.entity.Part;
+import software.sigma.bu003.internship.coparts.part.entity.SupplierPart;
 
 import java.util.List;
 

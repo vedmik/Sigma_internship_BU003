@@ -13,7 +13,7 @@ import software.sigma.bu003.internship.coparts.client.technomir.dto.responce.Tec
 import software.sigma.bu003.internship.coparts.client.technomir.dto.responce.StockTechnomirPart;
 import software.sigma.bu003.internship.coparts.client.technomir.exception.TechnomirEmptyStockException;
 import software.sigma.bu003.internship.coparts.client.technomir.exception.TechnomirPartNotFoundException;
-import software.sigma.bu003.internship.coparts.entity.Part;
+import software.sigma.bu003.internship.coparts.part.entity.Part;
 
 import java.util.List;
 import java.util.Optional;

@@ -7,10 +7,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import software.sigma.bu003.internship.coparts.entity.Part;
-import software.sigma.bu003.internship.coparts.service.PartService;
-import software.sigma.bu003.internship.coparts.service.exception.PartAlreadyCreatedException;
-import software.sigma.bu003.internship.coparts.service.exception.PartNotFoundException;
+import software.sigma.bu003.internship.coparts.config.security.JwtService;
+import software.sigma.bu003.internship.coparts.part.entity.Part;
+import software.sigma.bu003.internship.coparts.part.service.PartService;
+import software.sigma.bu003.internship.coparts.part.service.exception.PartAlreadyCreatedException;
+import software.sigma.bu003.internship.coparts.part.service.exception.PartNotFoundException;
 
 import java.util.List;
 
@@ -34,6 +35,9 @@ class PartControllerTest {
 
     @MockBean
     private PartService partService;
+
+    @MockBean
+    private JwtService jwtService;
 
     private final String URL_TEMPLATE = "/parts";
     private final String URL_TEMPLATE_WITH_BRAND_CODE = "/parts/{brand}/{code}";

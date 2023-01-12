@@ -1,12 +1,12 @@
-package software.sigma.bu003.internship.coparts.service;
+package software.sigma.bu003.internship.coparts.part.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.sigma.bu003.internship.coparts.client.CopartsClient;
-import software.sigma.bu003.internship.coparts.entity.Part;
-import software.sigma.bu003.internship.coparts.service.exception.PartNotFoundException;
-import software.sigma.bu003.internship.coparts.repository.PartRepository;
-import software.sigma.bu003.internship.coparts.service.exception.PartAlreadyCreatedException;
+import software.sigma.bu003.internship.coparts.part.entity.Part;
+import software.sigma.bu003.internship.coparts.part.service.exception.PartNotFoundException;
+import software.sigma.bu003.internship.coparts.part.repository.PartRepository;
+import software.sigma.bu003.internship.coparts.part.service.exception.PartAlreadyCreatedException;
 
 import java.util.List;
 

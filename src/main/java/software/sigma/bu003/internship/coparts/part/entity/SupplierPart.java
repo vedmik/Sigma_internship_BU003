@@ -1,4 +1,4 @@
-package software.sigma.bu003.internship.coparts.entity;
+package software.sigma.bu003.internship.coparts.part.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

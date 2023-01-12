@@ -1,4 +1,4 @@
-package software.sigma.bu003.internship.coparts.service.exception;
+package software.sigma.bu003.internship.coparts.part.service.exception;
 
 public class PartAlreadyCreatedException extends RuntimeException {
     public PartAlreadyCreatedException(String brand, String code) {
