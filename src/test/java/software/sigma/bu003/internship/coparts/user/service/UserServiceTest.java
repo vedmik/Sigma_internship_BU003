@@ -132,7 +132,7 @@ class UserServiceTest {
     }
 
     @Test
-    void deleteUser() {
+    void shouldDeleteUserIfSuccessfully() {
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(testUser));
 
         sut.deleteUser(EMAIL);
@@ -141,7 +141,7 @@ class UserServiceTest {
     }
 
     @Test
-    void userUpdate() {
+    void shouldUserUpdateIfSuccessfully() {
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(testUser));
         when(userRepository.save(testUser)).thenReturn(testUser);
         when(passwordEncoder.encode(PASSWORD)).thenReturn(PASSWORD);

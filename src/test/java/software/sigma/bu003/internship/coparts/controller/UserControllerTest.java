@@ -6,8 +6,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
 import software.sigma.bu003.internship.coparts.config.security.JwtService;
 import software.sigma.bu003.internship.coparts.user.model.AuthenticationRequest;
@@ -76,7 +74,7 @@ class UserControllerTest {
             .build();
 
     @Test
-    void getAllUsers() throws Exception {
+    void shouldReturnListIfSuccessfully() throws Exception {
         List<User> expectedList = List.of(testUser);
 
         when(userService.getAllUsers()).thenReturn(expectedList);
@@ -85,12 +83,11 @@ class UserControllerTest {
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(String.format("[ %s ]", testUserJSON)));
-
         verify(userService).getAllUsers();
     }
 
     @Test
-    void getUser() throws Exception {
+    void shouldReturnUserIfSuccessfully() throws Exception {
         when(userService.getUser(EMAIL)).thenReturn(testUser);
 
         mockMvc.perform(get(String.format("%s/{email}",URL_TEMPLATE),EMAIL))
@@ -102,7 +99,7 @@ class UserControllerTest {
     }
 
     @Test
-    void userUpdate() throws Exception {
+    void shouldUserUpdateIfSuccessfully() throws Exception {
         when(userService.userUpdate(testUser)).thenReturn(testUser);
 
         mockMvc.perform(put(URL_TEMPLATE)
@@ -114,7 +111,7 @@ class UserControllerTest {
     }
 
     @Test
-    void userDelete() throws Exception {
+    void shouldUserDeleteIfSuccessfully() throws Exception {
         doNothing().when(userService).deleteUser(EMAIL);
 
         mockMvc.perform(delete(String.format("%s/{email}",URL_TEMPLATE),EMAIL))
@@ -124,9 +121,7 @@ class UserControllerTest {
     }
 
     @Test
-    void userRegister() throws Exception {
-        when(userService.userRegister(testRegisterRequest)).thenReturn(testUserWithRole);
-
+    void shouldReturnUserIfUserRegister() throws Exception {
         String testUserWithRoleJSON = """
                 {
                          "email": "test@Test.com",
@@ -134,6 +129,9 @@ class UserControllerTest {
                          "userRole": "USER"
                 }
                 """;
+
+        when(userService.userRegister(testRegisterRequest)).thenReturn(testUserWithRole);
+
         mockMvc.perform(post(URL_TEMPLATE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(testUserJSON))
@@ -144,7 +142,7 @@ class UserControllerTest {
     }
 
     @Test
-    void userAuth() throws Exception {
+    void shouldReturnTokenIfUserAuth() throws Exception {
         String JWT_TOKEN = "token";
         when(userService.userAuth(testAuthenticationRequest)).thenReturn(JWT_TOKEN);
 

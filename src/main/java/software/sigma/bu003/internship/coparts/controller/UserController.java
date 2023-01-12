@@ -59,5 +59,6 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public String userAuth(@RequestBody AuthenticationRequest request) {
         return userService.userAuth(request);
+
     }
 }

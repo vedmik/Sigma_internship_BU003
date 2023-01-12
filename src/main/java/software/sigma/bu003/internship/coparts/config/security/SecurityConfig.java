@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .csrf()
                     .disable()
                 .authorizeHttpRequests()
-                .antMatchers(URL_USERS + "/auth", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .antMatchers(URL_USERS + "/auth", "/swagger-ui/**", "/v3/api-docs/**","/").permitAll()
                 .antMatchers(HttpMethod.GET, URL_PARTS).permitAll()
                 .antMatchers(HttpMethod.POST, URL_USERS).permitAll()
                 .antMatchers(HttpMethod.GET, URL_USERS).hasAnyAuthority(ROLE_ADMIN, ROLE_MANAGER)
