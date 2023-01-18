@@ -6,7 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import software.sigma.bu003.internship.coparts.config.security.JwtService;
+import software.sigma.bu003.internship.coparts.config.security.JwtConfiguration;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -19,7 +19,7 @@ class MainControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private JwtService jwtService;
+    private JwtConfiguration jwtConfiguration;
 
     @Test
     void shouldMainRedirectToSwaggerIfSuccess() throws Exception {

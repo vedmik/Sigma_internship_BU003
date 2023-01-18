@@ -7,7 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import software.sigma.bu003.internship.coparts.config.security.JwtService;
+import software.sigma.bu003.internship.coparts.config.security.JwtConfiguration;
 import software.sigma.bu003.internship.coparts.user.model.AuthenticationRequest;
 import software.sigma.bu003.internship.coparts.user.model.RegisterRequest;
 import software.sigma.bu003.internship.coparts.user.model.User;
@@ -37,7 +37,7 @@ class UserControllerTest {
     private UserService userService;
 
     @MockBean
-    private JwtService jwtService;
+    private JwtConfiguration jwtConfiguration;
 
     private final String URL_TEMPLATE = "/users";
 

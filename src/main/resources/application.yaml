@@ -11,6 +11,13 @@ spring:
     url: jdbc:mysql://localhost:3306/coparts
     username: user
     password: root
+  jpa:
+    open-in-view: false
 technomir-api:
   url-to-api: https://api.tehnomir.com.ua
   api-token: cmFkLGcROJnATF0YCpB6sh4kv04s3Z7s
+
+springdoc:
+  swagger-ui:
+    csrf:
+      enabled: true

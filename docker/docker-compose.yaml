@@ -27,8 +27,3 @@ services:
 volumes:
   mongodb-data: {}
   mysql-data: {}
-
-networks:
-  default:
-    name: coparts_network
-    

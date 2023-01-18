@@ -6,7 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import software.sigma.bu003.internship.coparts.config.security.JwtService;
+import software.sigma.bu003.internship.coparts.config.security.JwtConfiguration;
 import software.sigma.bu003.internship.coparts.user.model.AuthenticationRequest;
 import software.sigma.bu003.internship.coparts.user.model.RegisterRequest;
 import software.sigma.bu003.internship.coparts.user.model.User;
@@ -24,7 +24,7 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final JwtService jwtService;
+    private final JwtConfiguration jwtConfiguration;
 
     private final AuthenticationManager authenticationManager;
 
@@ -32,9 +32,7 @@ public class UserService {
 
         userRepository.findByEmail(request.getEmail())
                 .ifPresent(u -> {
-                    throw new UserAlreadyExistsException(
-                            String.format("User with email: %s has already created", request.getEmail())
-                    );
+                    throw new UserAlreadyExistsException(request.getEmail());
                 });
 
         User user = User.builder()
@@ -56,7 +54,7 @@ public class UserService {
                 ))
                 .getPrincipal();
 
-        return jwtService.generateToken(user);
+        return jwtConfiguration.generateToken(user);
     }
 
     public List<User> getAllUsers() {

@@ -14,6 +14,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Email;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class User implements UserDetails {
     private Integer id;
     private String firstName;
     private String lastName;
+    @Email
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)

@@ -25,7 +25,9 @@ public class CopartsApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        String.format("User with username: %s is not found", username)
+                ));
     }
 
     @Bean

@@ -10,7 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import software.sigma.bu003.internship.coparts.config.security.JwtService;
+import software.sigma.bu003.internship.coparts.config.security.JwtConfiguration;
 import software.sigma.bu003.internship.coparts.user.model.AuthenticationRequest;
 import software.sigma.bu003.internship.coparts.user.model.RegisterRequest;
 import software.sigma.bu003.internship.coparts.user.model.User;
@@ -36,7 +36,7 @@ class UserServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
-    private JwtService jwtService;
+    private JwtConfiguration jwtConfiguration;
 
     @Mock
     private AuthenticationManager authenticationManager;
@@ -94,14 +94,14 @@ class UserServiceTest {
     @Test
     void ShouldReturnJwtIfSuccessfully() {
         String JWT_TOKEN = "token";
-        when(jwtService.generateToken(testUser)).thenReturn(JWT_TOKEN);
+        when(jwtConfiguration.generateToken(testUser)).thenReturn(JWT_TOKEN);
         when(authenticationManager.authenticate(testAuth)).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(testUser);
 
         sut.userAuth(testAuthenticationRequest);
 
         verify(authenticationManager, times(1)).authenticate(testAuth);
-        verify(jwtService, times(1)).generateToken(testUser);
+        verify(jwtConfiguration, times(1)).generateToken(testUser);
     }
 
     @Test

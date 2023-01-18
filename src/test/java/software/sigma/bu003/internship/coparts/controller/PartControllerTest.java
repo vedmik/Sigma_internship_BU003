@@ -7,7 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import software.sigma.bu003.internship.coparts.config.security.JwtService;
+import software.sigma.bu003.internship.coparts.config.security.JwtConfiguration;
 import software.sigma.bu003.internship.coparts.part.entity.Part;
 import software.sigma.bu003.internship.coparts.part.service.PartService;
 import software.sigma.bu003.internship.coparts.part.service.exception.PartAlreadyCreatedException;
@@ -37,7 +37,7 @@ class PartControllerTest {
     private PartService partService;
 
     @MockBean
-    private JwtService jwtService;
+    private JwtConfiguration jwtConfiguration;
 
     private final String URL_TEMPLATE = "/parts";
     private final String URL_TEMPLATE_WITH_BRAND_CODE = "/parts/{brand}/{code}";
