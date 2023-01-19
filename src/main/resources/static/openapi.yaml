@@ -1,0 +1,604 @@
+openapi: 3.0.1
+info:
+  title: Coparts
+  version: v1.0.0
+  x-logo:
+    url: ''
+  description: >-
+    With this API, you can create a service to order any spare parts for any
+    car, knowing only the part code.
+  contact:
+    name: Andrii Vedmid
+    email: andrii.vedmid@sigma.software
+servers:
+  - url: http://coparts.com.ua
+    description: ''
+    variables: {}
+    x-last-modified: 1673964984898
+  - url: http://localhost:8080
+    description: ''
+    variables: { }
+    x-last-modified: 1673966130269
+paths:
+  /users:
+    get:
+      tags:
+        - user-controller
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: OK
+        '202':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Accepted
+        '400':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Bad Request
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: getAllUsers
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      tags:
+        - user-controller
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/User'
+          description: OK
+        '202':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Accepted
+        '400':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Bad Request
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: userUpdate
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      tags:
+        - user-controller
+      responses:
+        '201':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Created
+        '202':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Accepted
+        '400':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Bad Request
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: userRegister
+  /parts/{brand}/{code}:
+    get:
+      tags:
+        - part-controller
+      parameters:
+        - name: brand
+          schema:
+            type: string
+          in: path
+          required: true
+        - name: code
+          schema:
+            type: string
+          in: path
+          required: true
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Part'
+          description: OK
+        '202':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Accepted
+        '400':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Bad Request
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: getPart
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Part'
+        required: true
+      tags:
+        - part-controller
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Part'
+          description: OK
+        '202':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Accepted
+        '400':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Bad Request
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: updatePart
+    delete:
+      tags:
+        - part-controller
+      parameters:
+        - name: brand
+          schema:
+            type: string
+          in: path
+          required: true
+        - name: code
+          schema:
+            type: string
+          in: path
+          required: true
+      responses:
+        '200':
+          description: OK
+        '202':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Accepted
+        '400':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Bad Request
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: deletePart
+  /users/auth:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationRequest'
+        required: true
+      tags:
+        - user-controller
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: OK
+        '202':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Accepted
+        '400':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Bad Request
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: userAuth
+  /parts:
+    get:
+      tags:
+        - part-controller
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Part'
+                description: ''
+                example: ''
+                externalDocs:
+                  url: ''
+                  description: ''
+              example: ''
+          description: OK
+          headers: {}
+          links: {}
+      operationId: getAllParts
+      summary: Show page with parts
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Part'
+        required: true
+      tags:
+        - part-controller
+      responses:
+        '201':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Part'
+          description: Created
+        '202':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Accepted
+        '400':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Bad Request
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: createPart
+  /users/{email}:
+    get:
+      tags:
+        - user-controller
+      parameters:
+        - name: email
+          schema:
+            type: string
+          in: path
+          required: true
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/User'
+          description: OK
+        '202':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Accepted
+        '400':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Bad Request
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: getUser
+    delete:
+      tags:
+        - user-controller
+      parameters:
+        - name: email
+          schema:
+            type: string
+          in: path
+          required: true
+      responses:
+        '200':
+          description: OK
+        '202':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Accepted
+        '400':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Bad Request
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: userDelete
+  /parts/synchronization:
+    get:
+      tags:
+        - part-controller
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Part'
+          description: OK
+        '202':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Accepted
+        '400':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Bad Request
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: getUpdatedParts
+components:
+  schemas:
+    GrantedAuthority:
+      type: object
+      properties:
+        authority:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          format: int32
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        userRole:
+          enum:
+            - USER
+            - MANAGER
+            - ADMIN
+          type: string
+        enabled:
+          type: boolean
+        accountNonLocked:
+          type: boolean
+        accountNonExpired:
+          type: boolean
+        credentialsNonExpired:
+          type: boolean
+        authorities:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantedAuthority'
+        username:
+          type: string
+    Part:
+      required:
+        - brand
+        - code
+      type: object
+      properties:
+        id:
+          type: string
+        brand:
+          type: string
+        code:
+          type: string
+        description:
+          type: string
+        supplierList:
+          type: array
+          items:
+            $ref: '#/components/schemas/SupplierPart'
+    SupplierPart:
+      type: object
+      properties:
+        priceLogo:
+          type: string
+        price:
+          type: string
+        currency:
+          enum:
+            - UAH
+            - USD
+            - EUR
+          type: string
+    RegisterRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    AuthenticationRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+  securitySchemes:
+    JWTAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |-
+        Example: 
+        > Authorization: Bearer <token>
+      x-last-modified: 1673965027270
+  headers: {}
+  responses: {}
+  parameters: {}
+tags: []
+security:
+  - JWTAuth: []
+externalDocs:
+  url: https://github.com/vedmik/coparts
+  description: >-
+    https://github.com/vedmik/coparts - source code
