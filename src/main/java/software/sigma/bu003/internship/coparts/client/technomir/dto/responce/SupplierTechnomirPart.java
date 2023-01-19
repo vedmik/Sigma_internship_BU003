@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import software.sigma.bu003.internship.coparts.entity.Currency;
+import software.sigma.bu003.internship.coparts.part.entity.Currency;
 
 import java.time.LocalDateTime;
 

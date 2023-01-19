@@ -7,9 +7,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import software.sigma.bu003.internship.coparts.security.model.UserRole;
-import software.sigma.bu003.internship.coparts.security.model.User;
-import software.sigma.bu003.internship.coparts.security.service.UserService;
+import software.sigma.bu003.internship.coparts.config.security.JwtConfiguration;
+import software.sigma.bu003.internship.coparts.user.model.AuthenticationRequest;
+import software.sigma.bu003.internship.coparts.user.model.RegisterRequest;
+import software.sigma.bu003.internship.coparts.user.model.User;
+import software.sigma.bu003.internship.coparts.user.model.UserRole;
+import software.sigma.bu003.internship.coparts.user.service.UserService;
 
 import java.util.List;
 
@@ -19,6 +22,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,72 +36,122 @@ class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private JwtConfiguration jwtConfiguration;
+
     private final String URL_TEMPLATE = "/users";
-    private final String USER_EMAIL = "test@test.com";
+
+    private final String EMAIL = "test@Test.com";
+
+    private final String PASSWORD = "pass";
 
     private final User testUser = User.builder()
-            .email(USER_EMAIL)
+            .email(EMAIL)
+            .password(PASSWORD)
             .build();
 
-    private final String expectedUserJSON = """
+    private final String testUserJSON = """
             {
-                "email": "test@test.com"
+                     "email": "test@Test.com",
+                     "password": "pass"
             }
             """;
 
-    private final String expectedAllRolesJSON = "[ \"SCOPE_MANAGER\", \"SCOPE_ADMIN\"]";
+    private final User testUserWithRole = User.builder()
+            .email(EMAIL)
+            .password(PASSWORD)
+            .userRole(UserRole.USER)
+            .build();
+
+    private final RegisterRequest testRegisterRequest = RegisterRequest.builder()
+            .email(EMAIL)
+            .password(PASSWORD)
+            .build();
+
+    private final AuthenticationRequest testAuthenticationRequest = AuthenticationRequest.builder()
+            .email(EMAIL)
+            .password(PASSWORD)
+            .build();
 
     @Test
-    void shouldReturnListUsers() throws Exception {
-        when(userService.getAllUsers()).thenReturn((List.of(testUser)));
+    void shouldReturnListIfSuccessfully() throws Exception {
+        List<User> expectedList = List.of(testUser);
 
-        mockMvc.perform(get(URL_TEMPLATE))
-                .andExpect(status().isOk())
+        when(userService.getAllUsers()).thenReturn(expectedList);
+
+        mockMvc.perform(get(URL_TEMPLATE ))
+                .andExpect(status().isInternalServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(String.format("[ %s ]", expectedUserJSON)));
-
+                .andExpect(content().json(String.format("[ %s ]", testUserJSON)));
         verify(userService).getAllUsers();
     }
 
     @Test
-    void shouldReturnUserByEmail() throws Exception {
-        when(userService.getUserByEmail(USER_EMAIL)).thenReturn(testUser);
+    void shouldReturnUserIfSuccessfully() throws Exception {
+        when(userService.getUser(EMAIL)).thenReturn(testUser);
 
-        mockMvc.perform(get(URL_TEMPLATE + "/{email}", USER_EMAIL))
-                .andExpect(status().isOk())
+        mockMvc.perform(get(String.format("%s/{email}",URL_TEMPLATE),EMAIL))
+                .andExpect(status().isInternalServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(expectedUserJSON));
+                .andExpect(content().json(testUserJSON));
 
-        verify(userService).getUserByEmail(USER_EMAIL);
+        verify(userService).getUser(EMAIL);
     }
 
     @Test
-    void shouldReturnAllRoles() throws Exception {
-        mockMvc.perform(get(URL_TEMPLATE + "/roles"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(expectedAllRolesJSON));
+    void shouldUserUpdateIfSuccessfully() throws Exception {
+        when(userService.userUpdate(testUser)).thenReturn(testUser);
+
+        mockMvc.perform(put(URL_TEMPLATE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(testUserJSON))
+                .andExpect(content().json(testUserJSON));
+
+        verify(userService).userUpdate(testUser);
     }
 
     @Test
-    void shouldAddRoleToUser() throws Exception {
-        doNothing().when(userService).addUserRoles(USER_EMAIL, List.of(UserRole.SCOPE_MANAGER, UserRole.SCOPE_ADMIN));
+    void shouldUserDeleteIfSuccessfully() throws Exception {
+        doNothing().when(userService).deleteUser(EMAIL);
 
-        mockMvc.perform(post(URL_TEMPLATE+ "/{email}", USER_EMAIL)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(expectedAllRolesJSON))
+        mockMvc.perform(delete(String.format("%s/{email}",URL_TEMPLATE),EMAIL))
                 .andExpect(status().isOk());
 
-        verify(userService).addUserRoles(USER_EMAIL, List.of(UserRole.SCOPE_MANAGER, UserRole.SCOPE_ADMIN));
+        verify(userService).deleteUser(EMAIL);
     }
 
     @Test
-    void shouldDeleteRoleToUser() throws Exception {
-        doNothing().when(userService).deleteUserRole(USER_EMAIL, UserRole.SCOPE_ADMIN);
+    void shouldReturnUserIfUserRegister() throws Exception {
+        String testUserWithRoleJSON = """
+                {
+                         "email": "test@Test.com",
+                         "password": "pass",
+                         "userRole": "USER"
+                }
+                """;
 
-        mockMvc.perform(delete("/users/{email}/{role}", USER_EMAIL, "SCOPE_ADMIN"))
-                .andExpect(status().isOk());
+        when(userService.userRegister(testRegisterRequest)).thenReturn(testUserWithRole);
 
-        verify(userService).deleteUserRole(USER_EMAIL, UserRole.SCOPE_ADMIN);
+        mockMvc.perform(post(URL_TEMPLATE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(testUserJSON))
+                .andExpect(status().isCreated())
+                .andExpect(content().json(testUserWithRoleJSON));
+
+        verify(userService).userRegister(testRegisterRequest);
+    }
+
+    @Test
+    void shouldReturnTokenIfUserAuth() throws Exception {
+        String JWT_TOKEN = "token";
+        when(userService.userAuth(testAuthenticationRequest)).thenReturn(JWT_TOKEN);
+
+        mockMvc.perform(post(URL_TEMPLATE + "/auth")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(testUserJSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string(JWT_TOKEN));
+
+        verify(userService).userAuth(testAuthenticationRequest);
     }
 }
