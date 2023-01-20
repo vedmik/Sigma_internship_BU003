@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import software.sigma.bu003.internship.coparts.controller.exception.IncorrectRequestBodyException;
+import software.sigma.bu003.internship.coparts.part.entity.PageParts;
 import software.sigma.bu003.internship.coparts.part.entity.Part;
 import software.sigma.bu003.internship.coparts.part.service.PartService;
 
@@ -36,8 +38,11 @@ public class PartController {
     }
 
     @GetMapping
-    public List<Part> getAllParts() {
-        return partService.getAllParts();
+    public PageParts getAllParts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        return partService.getAllParts(page, size);
     }
 
     @GetMapping("/{brand}/{code}")
