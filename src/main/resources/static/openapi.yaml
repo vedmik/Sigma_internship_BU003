@@ -2,49 +2,82 @@ openapi: 3.0.1
 info:
   title: Coparts
   version: v1.0.0
-  x-logo:
-    url: ''
   description: >-
     With this API, you can create a service to order any spare parts for any
     car, knowing only the part code.
   contact:
     name: Andrii Vedmid
     email: andrii.vedmid@sigma.software
+  x-logo:
+    url: ''
 servers:
   - url: http://coparts.com.ua
     description: ''
-    variables: {}
-    x-last-modified: 1673964984898
   - url: http://localhost:8080
     description: ''
-    variables: { }
-    x-last-modified: 1673966130269
 paths:
-  /users:
-    get:
+  /users/auth:
+    post:
+      summary: 'Return Bearer token'
+      description: 'Accepts a login and password, and returns a bearer token. Available to all users.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationRequest'
+            examples:
+              Super User:
+                value:
+                  email: 'medvik9@gmail.com'
+                  password: 'pass'
+              User 1:
+                value:
+                  email: 'user1@test.com'
+                  password: 'pass1'
+              User 2:
+                value:
+                  email: 'user2@test.com'
+                  password: 'pass2'
+        required: true
       tags:
-        - user-controller
+        - Users
       responses:
         '200':
           content:
             '*/*':
               schema:
+                type: string
+          description: OK
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: userAuth
+  /users:
+    get:
+      summary: 'Get all Users'
+      security:
+        - JWTAuth: [ ]
+      description: 'Returns a list of all registered users. Available to users with role MANAGER or ADMIN.'
+      tags:
+        - Users
+      responses:
+        '200':
+          content:
+            'application/json':
+              schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
           description: OK
-        '202':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Accepted
-        '400':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Bad Request
         '404':
           content:
             '*/*':
@@ -58,75 +91,37 @@ paths:
                 type: string
           description: Service Unavailable
       operationId: getAllUsers
-    put:
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-        required: true
-      tags:
-        - user-controller
-      responses:
-        '200':
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/User'
-          description: OK
-        '202':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Accepted
-        '400':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Bad Request
-        '404':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Not Found
-        '503':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Service Unavailable
-      operationId: userUpdate
     post:
+      summary: 'Add new user'
+      description: 'Register new user with role USER. Available to all users.'
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/RegisterRequest'
+            examples:
+              User 1:
+                value:
+                  firstName: 'Aleksei'
+                  lastName: 'Arestovich'
+                  email: 'user1@test.com'
+                  password: 'pass1'
+              User 2:
+                value:
+                  firstName: 'Taras'
+                  lastName: 'Shevchenko'
+                  email: 'user2@test.com'
+                  password: 'pass2'
         required: true
       tags:
-        - user-controller
+        - Users
       responses:
         '201':
           content:
-            '*/*':
+            'application/json':
               schema:
                 $ref: '#/components/schemas/User'
           description: Created
-        '202':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Accepted
-        '400':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Bad Request
         '404':
           content:
             '*/*':
@@ -140,19 +135,290 @@ paths:
                 type: string
           description: Service Unavailable
       operationId: userRegister
+    put:
+      summary: 'Update user'
+      security:
+        - JWTAuth: [ ]
+      description: 'Update user. Available to users with role ADMIN.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            examples:
+              User 2 role USER:
+                value:
+                  firstName: 'Taras'
+                  lastName: 'Shevchenko'
+                  email: 'user2@test.com'
+                  password: 'pass2'
+                  userRole: 'USER'
+              User 2 role MANAGER:
+                value:
+                  firstName: 'Taras'
+                  lastName: 'Shevchenko'
+                  email: 'user2@test.com'
+                  password: 'pass2'
+                  userRole: 'MANAGER'
+              User 2 role ADMIN:
+                value:
+                  firstName: 'Taras'
+                  lastName: 'Shevchenko'
+                  email: 'user2@test.com'
+                  password: 'pass2'
+                  userRole: 'ADMIN'
+        required: true
+      tags:
+        - Users
+      responses:
+        '200':
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/User'
+          description: OK
+        '400':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: 'can`t parse JSON.  Raw result: This user has not found'
+        '403':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Unauthorized
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: userUpdate
+  /users/{email}:
+    get:
+      summary: 'Get user'
+      security:
+        - JWTAuth: [ ]
+      description: 'Get user by email. Available to users with role MANAGER or ADMIN.'
+      tags:
+        - Users
+      parameters:
+        - name: email
+          schema:
+            type: string
+          examples:
+            User 2:
+              value: 'user2@test.com'
+          in: path
+          required: true
+      responses:
+        '200':
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/User'
+          description: OK
+        '403':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Unauthorized
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: getUser
+    delete:
+      summary: 'Delete user'
+      security:
+        - JWTAuth: [ ]
+      description: 'Delete user by email. Available to users with role MANAGER or ADMIN.'
+      tags:
+        - Users
+      parameters:
+        - name: email
+          schema:
+            type: string
+          examples:
+            User 2:
+              value: 'user1@test.com'
+          in: path
+          required: true
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: OK
+        '403':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Unauthorized
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: userDelete
+  /parts:
+    get:
+      summary: 'get all parts'
+      description: 'Get all parts from MongoDB. Available for all users.'
+      tags:
+        - Parts
+      parameters:
+        - name: page
+          schema:
+            format: int32
+            default: 0
+            type: integer
+          in: query
+          required: false
+          description: number of page
+          allowEmptyValue: false
+          deprecated: false
+        - name: size
+          schema:
+            format: int32
+            default: 5
+            type: integer
+          in: query
+          required: false
+          description: The size of the number of entries object on the page
+          allowEmptyValue: false
+          deprecated: false
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageParts'
+          description: OK
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: getAllParts
+    post:
+      summary: 'Add part'
+      security:
+        - JWTAuth: [ ]
+      description: 'Add new part to MongoDB. Available to users with role MANAGER or ADMIN.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Part'
+            examples:
+              Part 1:
+                value:
+                  brand: 'AUDI'
+                  code: 'vw2345'
+                  description: 'some desc'
+                  supplierList:
+                    - priceLogo: 'stock'
+                      price: 15.15
+                      currency: 'USD'
+              Part 2:
+                value:
+                  brand: 'PEUGEOT'
+                  code: 'cr12e18'
+                  description: 'помпа'
+                  supplierList:
+                    - priceLogo: 'stock'
+                      price: 80.00
+                      currency: 'USD'
+        required: true
+      tags:
+        - Parts
+      responses:
+        '201':
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Part'
+          description: Created
+        '202':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Accepted
+        '403':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Unauthorized
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: createPart
   /parts/{brand}/{code}:
     get:
+      summary: 'Get part'
+      security:
+        - JWTAuth: [ ]
+      description: 'Get some parts. Available to users with role MANAGER or ADMIN.'
       tags:
-        - part-controller
+        - Parts
       parameters:
         - name: brand
           schema:
             type: string
+          examples:
+            example 1:
+              value: 'AUDI'
+            example 2:
+              value: 'PEUGEOT'
           in: path
           required: true
         - name: code
           schema:
             type: string
+          examples:
+            example 1:
+              value: 'vw2345'
+            example 2:
+              value: 'cr12e18'
           in: path
           required: true
       responses:
@@ -162,18 +428,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Part'
           description: OK
-        '202':
+        '403':
           content:
             '*/*':
               schema:
                 type: string
-          description: Accepted
-        '400':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Bad Request
+          description: Unauthorized
         '404':
           content:
             '*/*':
@@ -188,14 +448,60 @@ paths:
           description: Service Unavailable
       operationId: getPart
     put:
+      summary: 'Update part'
+      security:
+        - JWTAuth: [ ]
+      description: 'Update information about Part. Available to users with role MANAGER or ADMIN.'
+      parameters:
+        - name: brand
+          schema:
+            type: string
+          examples:
+            example 1:
+              value: 'AUDI'
+          in: path
+          required: true
+        - name: code
+          schema:
+            type: string
+          examples:
+            example 1:
+              value: 'vw2345'
+          in: path
+          required: true
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Part'
+            examples:
+              Add new supplier to Example 1:
+                value:
+                  brand: 'AUDI'
+                  code: 'vw2345'
+                  description: 'some desc'
+                  supplierList:
+                    - priceLogo: 'stock'
+                      price: 15.15
+                      currency: 'USD'
+                    - priceLogo: 'warehouse'
+                      price: 17.15
+                      currency: 'USD'
+              Change description to Example 1:
+                value:
+                  brand: 'AUDI'
+                  code: 'vw2345'
+                  description: 'Changed description'
+                  supplierList:
+                    - priceLogo: 'stock'
+                      price: 15.15
+                      currency: 'USD'
+                    - priceLogo: 'warehouse'
+                      price: 17.15
+                      currency: 'USD'
         required: true
       tags:
-        - part-controller
+        - Parts
       responses:
         '200':
           content:
@@ -203,18 +509,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Part'
           description: OK
-        '202':
+        '403':
           content:
             '*/*':
               schema:
                 type: string
-          description: Accepted
-        '400':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Bad Request
+          description: Unauthorized
         '404':
           content:
             '*/*':
@@ -229,34 +529,42 @@ paths:
           description: Service Unavailable
       operationId: updatePart
     delete:
+      summary: 'Delete part'
+      security:
+        - JWTAuth: [ ]
+      description: 'Delete part from MongoDB. Available to users with role MANAGER or ADMIN.'
       tags:
-        - part-controller
+        - Parts
       parameters:
         - name: brand
           schema:
             type: string
+          examples:
+            example 1:
+              value: 'AUDI'
+            example 2:
+              value: 'PEUGEOT'
           in: path
           required: true
         - name: code
           schema:
             type: string
+          examples:
+            example 1:
+              value: 'vw2345'
+            example 2:
+              value: 'cr12e18'
           in: path
           required: true
       responses:
         '200':
           description: OK
-        '202':
+        '403':
           content:
             '*/*':
               schema:
                 type: string
-          description: Accepted
-        '400':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Bad Request
+          description: Unauthorized
         '404':
           content:
             '*/*':
@@ -270,52 +578,14 @@ paths:
                 type: string
           description: Service Unavailable
       operationId: deletePart
-  /users/auth:
-    post:
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthenticationRequest'
-        required: true
-      tags:
-        - user-controller
-      responses:
-        '200':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: OK
-        '202':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Accepted
-        '400':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Bad Request
-        '404':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Not Found
-        '503':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Service Unavailable
-      operationId: userAuth
-  /parts:
+  /parts/synchronization:
     get:
+      summary: 'Synchronize with external API'
+      security:
+        - JWTAuth: [ ]
+      description: 'Synchronized MongoDB with External API. Available to users with role MANAGER or ADMIN.'
       tags:
-        - part-controller
+        - Parts
       responses:
         '200':
           content:
@@ -333,165 +603,27 @@ paths:
           description: OK
           headers: {}
           links: {}
-      operationId: getAllParts
-      summary: Show page with parts
-    post:
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Part'
-        required: true
-      tags:
-        - part-controller
-      responses:
-        '201':
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/Part'
-          description: Created
-        '202':
+        '403':
           content:
             '*/*':
               schema:
                 type: string
-          description: Accepted
-        '400':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Bad Request
-        '404':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Not Found
+          description: Unauthorized
         '503':
           content:
             '*/*':
               schema:
                 type: string
+                pattern: ''
+                description: ''
+                example: ''
+                externalDocs:
+                  url: ''
+                  description: ''
+              example: ''
           description: Service Unavailable
-      operationId: createPart
-  /users/{email}:
-    get:
-      tags:
-        - user-controller
-      parameters:
-        - name: email
-          schema:
-            type: string
-          in: path
-          required: true
-      responses:
-        '200':
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/User'
-          description: OK
-        '202':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Accepted
-        '400':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Bad Request
-        '404':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Not Found
-        '503':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Service Unavailable
-      operationId: getUser
-    delete:
-      tags:
-        - user-controller
-      parameters:
-        - name: email
-          schema:
-            type: string
-          in: path
-          required: true
-      responses:
-        '200':
-          description: OK
-        '202':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Accepted
-        '400':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Bad Request
-        '404':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Not Found
-        '503':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Service Unavailable
-      operationId: userDelete
-  /parts/synchronization:
-    get:
-      tags:
-        - part-controller
-      responses:
-        '200':
-          content:
-            '*/*':
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Part'
-          description: OK
-        '202':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Accepted
-        '400':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Bad Request
-        '404':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Not Found
-        '503':
-          content:
-            '*/*':
-              schema:
-                type: string
-          description: Service Unavailable
+          headers: {}
+          links: {}
       operationId: getUpdatedParts
 components:
   schemas:
@@ -583,22 +715,35 @@ components:
           type: string
         password:
           type: string
+    PageParts:
+      type: object
+      properties:
+        parts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Part'
+        totalItems:
+          type: integer
+          format: int64
+        currentPage:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
   securitySchemes:
     JWTAuth:
-      type: http
       scheme: bearer
       bearerFormat: JWT
+      type: http
       description: |-
         Example: 
         > Authorization: Bearer <token>
-      x-last-modified: 1673965027270
   headers: {}
   responses: {}
   parameters: {}
-tags: []
-security:
-  - JWTAuth: []
 externalDocs:
-  url: https://github.com/vedmik/coparts
   description: >-
-    https://github.com/vedmik/coparts - source code
+    [github.com/vedmik/coparts ] - You can find the source code, as well as a description of how to run
+    it on aws es2
+  url: 'https://github.com/vedmik/coparts'

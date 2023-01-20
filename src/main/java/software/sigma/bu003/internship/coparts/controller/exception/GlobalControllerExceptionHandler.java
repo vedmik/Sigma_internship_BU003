@@ -40,7 +40,7 @@ public class GlobalControllerExceptionHandler {
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public String userIsNotIdentify(UsernameNotFoundException ex) {
         log.error(ex.getMessage(), ex);

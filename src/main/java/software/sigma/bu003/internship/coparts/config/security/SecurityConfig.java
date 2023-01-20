@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .antMatchers(URL_USERS + "/auth", "/swagger-ui/**", "/v3/api-docs/**","/","/openapi.yaml").permitAll()
                 .antMatchers(HttpMethod.GET, URL_PARTS).permitAll()
                 .antMatchers(HttpMethod.POST, URL_USERS).permitAll()
-                .antMatchers(HttpMethod.GET, URL_USERS).hasAnyAuthority(ROLE_ADMIN, ROLE_MANAGER)
+                .antMatchers(HttpMethod.GET, URL_USERS, URL_USERS + "/**").hasAnyAuthority(ROLE_ADMIN, ROLE_MANAGER)
                 .antMatchers(URL_PARTS).hasAnyAuthority(ROLE_ADMIN, ROLE_MANAGER)
                 .antMatchers(URL_USERS + "/**", URL_USERS).hasAuthority(ROLE_ADMIN)
                 .anyRequest().authenticated()
