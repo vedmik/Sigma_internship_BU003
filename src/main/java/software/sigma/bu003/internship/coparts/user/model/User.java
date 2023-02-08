@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Entity;
@@ -17,6 +19,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @Builder
@@ -35,6 +38,14 @@ public class User implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
+
+    public static User getCurrentUser() {
+        return Optional.ofNullable((User) SecurityContextHolder
+                        .getContext()
+                        .getAuthentication()
+                        .getPrincipal())
+                .orElseThrow(() -> new AuthenticationCredentialsNotFoundException("No credentials found in context"));
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

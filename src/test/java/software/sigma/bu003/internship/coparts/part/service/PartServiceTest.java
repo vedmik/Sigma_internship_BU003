@@ -145,7 +145,7 @@ class PartServiceTest {
         when(copartsClient.getAllParts()).thenReturn(List.of(testPart));
         when(partRepository.saveAll(anyList())).thenReturn(List.of(testPart));
 
-        sut.synchronizeWithTechnomir();
+        sut.syncWithTechnomir();
 
         verify(partRepository, times(1)).saveAll(anyList());
         verify(copartsClient, times(1)).getAllParts();

@@ -249,7 +249,7 @@ paths:
       summary: 'Delete user'
       security:
         - JWTAuth: [ ]
-      description: 'Delete user by email. Available to users with role MANAGER or ADMIN.'
+      description: 'Delete user by email. Available to users with role ADMIN.'
       tags:
         - Users
       parameters:
@@ -258,7 +258,7 @@ paths:
             type: string
           examples:
             User 2:
-              value: 'user1@test.com'
+              value: 'user2@test.com'
           in: path
           required: true
       responses:
@@ -395,9 +395,7 @@ paths:
   /parts/{brand}/{code}:
     get:
       summary: 'Get part'
-      security:
-        - JWTAuth: [ ]
-      description: 'Get some parts. Available to users with role MANAGER or ADMIN.'
+      description: 'Get some parts. Available for all users.'
       tags:
         - Parts
       parameters:
@@ -578,9 +576,9 @@ paths:
                 type: string
           description: Service Unavailable
       operationId: deletePart
-  /parts/synchronization:
+  /parts/sync:
     get:
-      summary: 'Synchronize with external API'
+      summary: 'Sync with external API'
       security:
         - JWTAuth: [ ]
       description: 'Synchronized MongoDB with External API. Available to users with role MANAGER or ADMIN.'
@@ -624,7 +622,242 @@ paths:
           description: Service Unavailable
           headers: {}
           links: {}
-      operationId: getUpdatedParts
+      operationId: syncParts
+  /orders:
+    get:
+      summary: 'get all orders'
+      security:
+        - JWTAuth: [ ]
+      description: 'Get all orders by logged user. Available for all authorized users.'
+      tags:
+        - Orders
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Orders'
+          description: OK
+        '403':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Unauthorized
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: getAllOrders
+    post:
+      summary: 'Add order'
+      security:
+        - JWTAuth: [ ]
+      description: 'Add new order. Available for all authorized users.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Parts'
+            example:
+                - brand: 'AUDI'
+                  code: 'vw2345'
+                  description: 'some desc'
+                  supplierList:
+                        - priceLogo: 'stock'
+                          price: 15.15
+                          currency: 'USD'
+                - brand: 'PEUGEOT'
+                  code: 'cr12e18'
+                  description: 'помпа'
+                  supplierList:
+                        - priceLogo: 'stock'
+                          price: 80.00
+                          currency: 'USD'
+        required: true
+      tags:
+        - Orders
+      responses:
+        '201':
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: Created
+        '403':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Unauthorized
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: createOrder
+  /orders/{orderID}:
+    get:
+      summary: 'get order'
+      parameters:
+        - name: orderID
+          schema:
+            type: string
+          in: path
+          required: true
+      security:
+        - JWTAuth: [ ]
+      description: 'Get order by logged user. Available for all authorized users.'
+      tags:
+        - Orders
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Orders'
+          description: OK
+        '403':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Unauthorized
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: getOrder
+    put:
+      summary: 'Update order'
+      parameters:
+        - name: orderID
+          schema:
+            type: string
+          in: path
+          required: true
+      security:
+        - JWTAuth: [ ]
+      description: 'Update order. Available for all authorized users.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Parts'
+        required: true
+      tags:
+        - Orders
+      responses:
+        '200':
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: Ok
+        '403':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Unauthorized
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: updateOrder
+    delete:
+      summary: 'Delete order'
+      parameters:
+        - name: orderID
+          schema:
+            type: string
+          in: path
+          required: true
+      security:
+        - JWTAuth: [ ]
+      description: 'Delete order. Available for all authorized users.'
+      tags:
+        - Orders
+      responses:
+        '200':
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: Ok
+        '403':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Unauthorized
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: deleteOrder
+  /orders/{orderID}/place:
+    get:
+      summary: 'place order'
+      parameters:
+        - name: orderID
+          schema:
+            type: string
+          in: path
+          required: true
+      security:
+        - JWTAuth: [ ]
+      description: 'Get order by logged user. Available for all authorized users.'
+      tags:
+        - Orders
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Orders'
+          description: OK
+        '403':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Unauthorized
+        '404':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Not Found
+        '503':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: Service Unavailable
+      operationId: passOrder
+
 components:
   schemas:
     GrantedAuthority:
@@ -684,6 +917,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SupplierPart'
+    Parts:
+      type: array
+      items:
+        $ref: '#/components/schemas/Part'
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        parts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Part'
+    Orders:
+      type: array
+      items:
+        $ref: '#/components/schemas/Order'
     SupplierPart:
       type: object
       properties:
@@ -745,5 +997,5 @@ components:
 externalDocs:
   description: >-
     [github.com/vedmik/coparts ] - You can find the source code, as well as a description of how to run
-    it on aws es2
+    it on AWS EC2
   url: 'https://github.com/vedmik/coparts'

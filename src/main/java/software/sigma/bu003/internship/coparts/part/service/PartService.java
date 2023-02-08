@@ -59,7 +59,7 @@ public class PartService {
                 .orElseThrow(() -> new PartNotFoundException(brand, code));
     }
 
-    public List<Part> synchronizeWithTechnomir() {
+    public List<Part> syncWithTechnomir() {
 
         return partRepository.saveAll(copartsClient.getAllParts());
     }
