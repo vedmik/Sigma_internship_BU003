@@ -3,71 +3,116 @@ ___
 ___
 # 1. S.O.L.I.D. Violation:
 ## S - Single Responsibility Principle
+
+"There should never be more than one reason for a class to change."
+
+In other words:
+Every class should have only one responsibility.
+
 ### Bad practice:
 ```java
-class Post {
-    public void createPost(Database db, string postMessage) {
-        try {
-            db.add(postMessage);
-        }
-        catch(Exception ex) {
-            db.logError("An error occured: ", ex.toString());
-            File.writeAllText("/LocalErrors.txt", ex.toString());
-        }
+public class Employee {
+    private String name;
+    private int id;
+    private double salary;
+
+    public void saveEmployeeDataToDatabase() {
+        // code to save employee data to database
+    }
+
+    public void calculateSalary() {
+        // code to calculate employee's salary
     }
 }
 ```
 ### Good practice:
 ```java
-class Post {
-    private ErrorLogger errorLogger = new ErrorLogger();
+public class Employee {
+    private String name;
+    private int id;
+    private double salary;
 
-    public void createPost(Database db, string postMessage) {
-        try {
-            db.add(postMessage);
-        }
-        catch(Exception ex) {
-            errorLogger.log(ex.toString());
-        }
+    // getters and setters for name, id and salary
+
+}
+
+public class EmployeeDatabase {
+    public void saveEmployeeDataToDatabase(Employee employee) {
+        // code to save employee data to database
     }
 }
 
-class ErrorLogger
-{
-    public void log(string error) {
-      db.logError("An error occured: ", error);
-      File.writeAllText("/LocalErrors.txt", error);
+public class EmployeeSalaryCalculator {
+    public void calculateSalary(Employee employee) {
+        // code to calculate employee's salary
     }
 }
 ```
 ## O — Open/closed principle
 
+"Software Entities should be open for extension, but closed for modification."
+
+You should never change anything, always adding new behavior by static or dynamic polymorphism. 
+By doing so you minimize change in your code base, thus minimizing the chance of breaking things.
+
 ### Bad practice:
 ```java
-class Post {
-    public void createPost(Database db, string postMessage) {
-        if (postMessage.startsWith("#")) {
-            db.addAsTag(postMessage);
+public class Shape {
+    private String type;
+
+    public Shape(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public double calculateArea() {
+        double area = 0.0;
+        if (type.equalsIgnoreCase("circle")) {
+            int radius = 10;
+            area = Math.PI * Math.pow(radius, 2);
+        } else if (type.equalsIgnoreCase("rectangle")) {
+            int width = 5;
+            int height = 10;
+            area = width * height;
         }
-        else {
-            db.add(postMessage);
-        }
+        return area;
     }
 }
-
 ```
 ### Good practice:
 ```java
-class Post {
-    public void createPost(Database db, string postMessage) {
-        db.add(postMessage);
+public abstract class Shape {
+    public abstract double calculateArea();
+}
+
+public class Circle extends Shape {
+    private int radius;
+
+    public Circle(int radius) {
+        this.radius = radius;
+    }
+
+    @Override
+    public double calculateArea() {
+        return Math.PI * Math.pow(radius, 2);
     }
 }
-                                           
-class TagPost extends Post {
+
+public class Rectangle extends Shape {
+    private int width;
+    private int height;
+
+    public Rectangle(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
     @Override
-    public void createPost(Database db, string postMessage) {
-        db.addAsTag(postMessage);
+    public double calculateArea() {
+        return width * height;
     }
 }
 
@@ -75,137 +120,233 @@ class TagPost extends Post {
 
 ## L — Liskov substitution principle
 
+"Functions that use pointers or references to base classes must be able to use objects of derived classes without knowing it."
+
+You should be able to substitute any parent class with any of their children without any behavior modification.
+
 ### Bad practice:
 ```java
-class Post {
-    public void createPost(Database db, string postMessage) {
-        db.add(postMessage);
+public class Rectangle {
+    private int width;
+    private int height;
+
+    // constructor, getters and setters for width, height
+
+    public int calculateArea() {
+        return width * height;
     }
 }
 
-class TagPost extends Post {
+public class Square extends Rectangle {
+    private int side;
+
+    public Square(int side) {
+        super(side, side);
+        this.side = side;
+    }
+
     @Override
-    public void createPost(Database db, string postMessage) {
-        db.addAsTag(postMessage);
+    public void setWidth(int width) {
+        this.side = width;
+        super.setWidth(width);
+        super.setHeight(width);
+    }
+
+    @Override
+    public void setHeight(int height) {
+        this.side = height;
+        super.setWidth(height);
+        super.setHeight(height);
     }
 }
-
-class MentionPost extends Post {
-    public void createMentionPost(Database db, string postMessage) {
-        string user = postMessage.parseUser();
-
-        db.notifyUser(user);
-        db.overrideExistingMention(user, postMessage);
-        super.createPost(db, postMessage);
-    }
-}
-
-class PostHandler {
-    private database = new Database();
-
-    public void handleNewPosts() {
-        List<string> newPosts = database.getUnhandledPostsMessages();
-
-        for (string postMessage : newPosts) {
-            Post post;
-
-            if (postMessage.StartsWith("#")) {
-                post = new TagPost();
-            }
-            else if (postMessage.StartsWith("@")) {
-                post = new MentionPost();
-            }
-            else {
-                post = new Post();
-            }
-
-            post.createPost(database, postMessage);
-        }
-    }
-}
-
 ```
 
 ### Good practice:
 ```java
-...
-class MentionPost extends Post {
+public interface Shape {
+    public int calculateArea();
+}
+
+public class Rectangle implements Shape {
+    private int width;
+    private int height;
+
+    // constructor, getters and setters for width, height
+
     @Override
-    public void createPost(Database db, string postMessage) {
-        string user = postMessage.parseUser();
-
-        notifyUser(user);
-        overrideExistingMention(user, postMessage)
-        super.createPost(db, postMessage);
-    }
-
-    private void notifyUser(string user) {
-        db.NotifyUser(user);
-    }
-
-    private void overrideExistingMention(string user, string postMessage) {
-        db.OverrideExistingMention(_user, postMessage);
+    public int calculateArea() {
+        return width * height;
     }
 }
-...
+
+public class Square implements Shape {
+    private int side;
+
+    // constructor, getter and setter for side
+
+    @Override
+    public int calculateArea() {
+        return side * side;
+    }
+}
+
 ```
 
 ## I — Interface segregation principle
+
+"Clients should not be forced to depend upon interfaces that they do not use."
+
+Many client specific interfaces are better than a big one. 
+An interface should be the minimal set of behaviors (or functions) you need.
+
 ### Bad practice:
 ```java
-
-interface IPost {
-    void CreatePost();
+public interface Vehicle {
+    void start();
+    void stop();
+    void accelerate();
+    void brake();
 }
 
-interface IPostNew {
-    void CreatePost();
-    void ReadPost();
+public class Car implements Vehicle {
+    @Override
+    public void start() {
+        // implementation
+    }
+
+    @Override
+    public void stop() {
+        // implementation
+    }
+
+    @Override
+    public void accelerate() {
+        // implementation
+    }
+
+    @Override
+    public void brake() {
+        // implementation
+    }
 }
+
+public class Bicycle implements Vehicle {
+    @Override
+    public void start() {
+        // implementation
+    }
+
+    @Override
+    public void stop() {
+        // implementation
+    }
+
+    @Override
+    public void accelerate() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void brake() {
+        throw new UnsupportedOperationException();
+    }
+}
+
 ```
 ### Good practice:
 ```java
-interface IPostCreate {
-    void CreatePost();
+public interface Vehicle {
+    void start();
+    void stop();
 }
 
-interface IPostRead {
-    void ReadPost();
+public interface MotorVehicle extends Vehicle {
+    void accelerate();
+    void brake();
 }
+
+public class Car implements MotorVehicle {
+    @Override
+    public void start() {
+        // implementation
+    }
+
+    @Override
+    public void stop() {
+        // implementation
+    }
+
+    @Override
+    public void accelerate() {
+        // implementation
+    }
+
+    @Override
+    public void brake() {
+        // implementation
+    }
+}
+
+public class Bicycle implements Vehicle {
+    @Override
+    public void start() {
+        // implementation
+    }
+
+    @Override
+    public void stop() {
+        // implementation
+    }
+}
+
 ```
 
 ## D - Dependency inversion principle
-### Bad practice:
-```java
-class Post {
-    private ErrorLogger errorLogger = new ErrorLogger();
 
-    public void createPost(Database db, string postMessage) {
-        try {
-            db.add(postMessage);
-        }
-        catch (Exception ex) {
-            errorLogger.log(ex.toString())
-        }
+"Depend upon abstractions, not concretions."
+
+Your project shouldn’t depend of anything, make those things depend of interfaces. 
+You should design a wrapper around your dependency.
+
+### Bad practice:
+
+```java
+public class Backend {
+    public void doSomething() {
+        // implementation
+    }
+}
+
+public class Frontend {
+    private Backend backend = new Backend();
+
+    public void doSomething() {
+        backend.doSomething();
     }
 }
 ```
 ### Good practice:
 ```java
-class Post {
-    private Logger logger;
+public interface Backend {
+    void doSomething();
+}
 
-    public Post(Logger injectedLogger) {
-        this.logger = injectedLogger;
+public class BackendImpl implements Backend {
+    @Override
+    public void doSomething() {
+        // implementation
+    }
+}
+
+public class Frontend {
+    private Backend backend;
+
+    public Frontend(Backend backend) {
+        this.backend = backend;
     }
 
-    public void CreatePost(Database db, string postMessage) {
-        try {
-            db.add(postMessage);
-        }
-        catch (Exception ex) {
-            logger.log(ex.toString());
-        }
+    public void doSomething() {
+        backend.doSomething();
     }
 }
 ```
@@ -642,6 +783,51 @@ public class LambdaExpressionExample5{
     }  
 }
 ```
+## 2.2.7 BAD PRACTICE LAMBDA
+  
+### 2.2.7.1 Overusing lambda expressions
+#### Bad practice
+```java
+List<String> names = new ArrayList<>();
+// Populate names list...
+names.stream().filter(name -> name.length() > 5)
+    .map(name -> name.toLowerCase())
+    .forEach(name -> System.out.println(name));
+```
+#### Good practice
+```java
+List<String> names = new ArrayList<>();
+// Populate names list...
+names.stream().filter(name -> name.length() > 5)
+    .map(String::toLowerCase)
+    .forEach(System.out::println);
+```
+### 2.2.7.2 Using overly complex lambda expressions
+#### Bad practice
+```java
+Function<String, Integer> stringToInt = (String str) -> {
+    char[] chars = str.toCharArray();
+    int result = 0;
+    for (char c : chars) {
+        result += c;
+    }
+    return result;
+};
+```
+#### Good practice
+```java
+Function<String, Integer> stringToInt = str -> str.chars().sum();
+```
+### 2.2.7.3 Neglecting to specify parameter types
+#### Bad practice
+```java
+Consumer<String> printString = str -> System.out.println(str);
+```
+#### Good practice
+```java
+Consumer<String> printString = (String str) -> System.out.println(str);
+```
+
 # 2.3 STREAM API - Best practices
 
 ## 2.3.1 Code formatting
@@ -685,7 +871,59 @@ strings.stream()
 	.collect(toList());
 ```
 
+## 2.3.2 Bad practice Stream
 
+### 2.3.2.1 Not closing the stream after use
+```java
+List<Integer> myList = Arrays.asList(1, 2, 3);
+Stream<Integer> stream = myList.stream();
+stream.filter(i -> i % 2 == 0);
+// stream not closed
+```
+### 2.3.2.2 Using parallel streams without considering the overhead
+```java
+List<Integer> myList = Arrays.asList(1, 2, 3);
+Stream<Integer> stream = myList.parallelStream();
+stream.filter(i -> i % 2 == 0);
+```
+### 2.3.2.3 Using infinite streams without considering performance implications
+```java
+Stream<Integer> infiniteStream = Stream.iterate(0, i -> i + 1);
+infiniteStream.filter(i -> i % 2 == 0).limit(10);
+```
+
+### 2.3.2.4 Creating a new stream unnecessarily
+```java
+List<Integer> myList = Arrays.asList(1, 2, 3);
+myList.stream().filter(i -> i % 2 == 0);
+myList.stream().filter(i -> i % 3 == 0);
+```
+### 2.3.2.5 Using a stream to iterate over a collection without adding any value
+```java
+List<Integer> myList = Arrays.asList(1, 2, 3);
+Stream<Integer> stream = myList.stream();
+stream.forEach(i -> { /* do nothing */ });
+```
+### 2.3.2.6 Creating a stream from an array instead of using Arrays.stream()
+```java
+int[] myArray = {1, 2, 3};
+Stream<Integer> stream = Stream.of(myArray).mapToObj(Integer::valueOf);
+```
+### 2.3.2.7 Using Stream.collect() to convert a stream to a list
+```java
+List<Integer> myList = Arrays.asList(1, 2, 3);
+List<Integer> result = myList.stream().collect(Collectors.toList());
+```
+### 2.3.2.8 Using Stream.collect() to reduce a stream to a single value
+```java
+List<Integer> myList = Arrays.asList(1, 2, 3);
+int sum = myList.stream().collect(Collectors.summingInt(Integer::intValue));
+```
+### 2.3.2.9 Using Stream.filter() to modify a stream instead of using Stream.map()
+```java
+List<Integer> myList = Arrays.asList(1, 2, 3);
+List<Integer> result = myList.stream().filter(i -> i % 2 == 0).collect(Collectors.toList());
+```
 ___
 ___
 
